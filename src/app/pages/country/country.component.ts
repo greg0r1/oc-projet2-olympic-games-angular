@@ -1,7 +1,8 @@
-import {HttpClient, HttpErrorResponse} from '@angular/common/http';
 import {Component, OnInit} from '@angular/core';
 import {ActivatedRoute, ParamMap, Router} from '@angular/router';
 import Chart from 'chart.js/auto';
+import {DataService} from '@services/data.service';
+import {Olympic} from '@models/olympic.model';
 
 
 @Component({
@@ -10,7 +11,6 @@ import Chart from 'chart.js/auto';
   styleUrls: ['./country.component.scss']
 })
 export class CountryComponent implements OnInit {
-  private olympicUrl = './assets/mock/olympic.json';
   public lineChart!: Chart<"line", string[], number>;
   public titlePage: string = '';
   public totalEntries: any = 0;
@@ -18,17 +18,20 @@ export class CountryComponent implements OnInit {
   public totalAthletes: number = 0;
   public error!: string;
 
-  constructor(private route: ActivatedRoute, private router: Router, private http: HttpClient) {
+  constructor(private route: ActivatedRoute, private router: Router, private dataService: DataService) {
   }
 
   ngOnInit() {
     let countryName: string | null = null
     this.route.paramMap.subscribe((param: ParamMap) => countryName = param.get('countryName'));
-    this.http.get<any[]>(this.olympicUrl).pipe().subscribe(
-      (data) => {
+    this.dataService.getOlympics().subscribe({
+      next: (data: Olympic[]) => {
         if (data && data.length > 0) {
-          const selectedCountry = data.find((i: any) => i.country === countryName);
-          this.titlePage = selectedCountry.country;
+          const selectedCountry = data.find((olympic: Olympic) => olympic.country === countryName);
+          if (!selectedCountry) {
+            return
+          }
+          this.titlePage = selectedCountry?.country ?? '';
           const participations = selectedCountry?.participations.map((i: any) => i);
           this.totalEntries = participations?.length ?? 0;
           const years = selectedCountry?.participations.map((i: any) => i.year) ?? [];
@@ -39,11 +42,10 @@ export class CountryComponent implements OnInit {
           this.buildChart(years, medals);
         }
       },
-      (error: HttpErrorResponse) => {
-        this.error = error.message
-      }
-    );
+      error: (error: Error) => this.error = error.message
+    })
   }
+
 
   buildChart(years: number[], medals: string[]) {
     const lineChart = new Chart("countryChart", {
