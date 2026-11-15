@@ -3,6 +3,7 @@ import {ActivatedRoute, Router} from '@angular/router';
 import Chart from 'chart.js/auto';
 
 import {CountryView} from '@models/country-view.model';
+import {Indicator} from '@models/indicator.model';
 import {DataService} from '@services/data.service';
 
 @Component({
@@ -13,27 +14,23 @@ import {DataService} from '@services/data.service';
 export class CountryComponent implements OnInit {
   public lineChart!: Chart<"line", number[], number>;
   public titlePage: string = '';
-  public totalEntries: number = 0;
-  public totalMedals: number = 0;
-  public totalAthletes: number = 0;
   public error!: string;
+  public indicators: Indicator[] = [];
 
   constructor(private route: ActivatedRoute, private router: Router, private dataService: DataService) {
   }
 
   ngOnInit() {
     const countryName: string | null = this.route.snapshot.paramMap.get('countryName');
-    if (!countryName) return
+    if (!countryName) return;
     this.dataService.getCountryView(countryName).subscribe({
       next: (countryView: CountryView | undefined): void => {
         if (!countryView) return
 
         this.titlePage = countryView.country;
-        this.totalEntries = countryView.totalEntries;
         const years: number[] = countryView.years;
         const medals: number[] = countryView.medalsPerYear;
-        this.totalMedals = countryView.totalMedals;
-        this.totalAthletes = countryView.totalAthletes;
+        this.indicators = this.buildIndicators(countryView);
         this.buildChart(years, medals);
       },
       error: (error: Error): void => {
@@ -41,7 +38,6 @@ export class CountryComponent implements OnInit {
       }
     })
   }
-
 
   buildChart(years: number[], medals: number[]) {
     const lineChart = new Chart("countryChart", {
@@ -61,5 +57,22 @@ export class CountryComponent implements OnInit {
       }
     });
     this.lineChart = lineChart;
+  }
+
+  private buildIndicators(countryView: CountryView): Indicator[] {
+    return [
+      {
+        label: "Number of entries",
+        value: countryView.totalEntries
+      },
+      {
+        label: "Total Number of medals",
+        value: countryView.totalMedals
+      },
+      {
+        label: "Total Number of athletes",
+        value: countryView.totalAthletes
+      }
+    ]
   }
 }
