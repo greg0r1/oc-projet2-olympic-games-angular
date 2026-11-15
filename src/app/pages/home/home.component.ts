@@ -1,7 +1,9 @@
-import {HttpClient, HttpErrorResponse} from '@angular/common/http';
 import {Component, OnInit} from '@angular/core';
-import { Router } from '@angular/router';
+import {Router} from '@angular/router';
 import Chart from 'chart.js/auto';
+import {DataService} from '@services/data.service';
+import {HomeView} from '@models/home-view.model';
+import {CountryMedals} from '@models/country-medals.model';
 
 @Component({
   selector: 'app-home',
@@ -9,43 +11,41 @@ import Chart from 'chart.js/auto';
   styleUrls: ['./home.component.scss'],
 })
 export class HomeComponent implements OnInit {
-  private olympicUrl = './assets/mock/olympic.json';
   public pieChart!: Chart<"pie", number[], string>;
   public totalCountries: number = 0
   public totalJOs: number = 0
-  public error!:string
+  public error!: string
   titlePage: string = "Medals per Country";
 
-  constructor(private router: Router, private http:HttpClient) { }
-
-  ngOnInit() {
-    this.http.get<any[]>(this.olympicUrl).pipe().subscribe(
-      (data) => {
-        console.log(`Liste des données : ${JSON.stringify(data)}`);
-        if (data && data.length > 0) {
-          this.totalJOs = Array.from(new Set(data.map((i: any) => i.participations.map((f: any) => f.year)).flat())).length;
-          const countries: string[] = data.map((i: any) => i.country);
-          this.totalCountries = countries.length;
-          const medals = data.map((i: any) => i.participations.map((i: any) => (i.medalsCount)));
-          const sumOfAllMedalsYears = medals.map((i) => i.reduce((acc: any, i: any) => acc + i, 0));
-          this.buildPieChart(countries, sumOfAllMedalsYears);
-        }
-      },
-      (error:HttpErrorResponse) => {
-        console.log(`erreur : ${error}`);
-        this.error = error.message
-      }
-    )
+  constructor(private router: Router, private dataService: DataService) {
   }
 
-  buildPieChart(countries: string[], sumOfAllMedalsYears: number[]) {
+  ngOnInit() {
+    this.dataService.getHomeView().subscribe(
+      {
+        next: (homeView: HomeView) => {
+          this.totalCountries = homeView.totalCountries;
+          this.totalJOs = homeView.totalGames
+
+          const countries: string[] = homeView.medalsPerCountry.map((countryMedals: CountryMedals): string => countryMedals.country);
+          const medals: number[] = homeView.medalsPerCountry.map((countryMedals: CountryMedals): number => countryMedals.totalMedals);
+          this.buildPieChart(countries, medals);
+        },
+        error: (error: Error) => {
+          console.log(`erreur : ${error}`);
+          this.error = error.message
+        }
+      })
+  }
+
+  buildPieChart(countries: string[], medals: number[]) {
     const pieChart = new Chart("DashboardPieChart", {
       type: 'pie',
       data: {
         labels: countries,
         datasets: [{
           label: 'Medals',
-          data: sumOfAllMedalsYears,
+          data: medals,
           backgroundColor: ['#0b868f', '#adc3de', '#7a3c53', '#8f6263', 'orange', '#94819d'],
           hoverOffset: 4
         }],
@@ -54,7 +54,7 @@ export class HomeComponent implements OnInit {
         aspectRatio: 2.5,
         onClick: (e) => {
           if (e.native) {
-            const points = pieChart.getElementsAtEventForMode(e.native, 'point', { intersect: true }, true)
+            const points = pieChart.getElementsAtEventForMode(e.native, 'point', {intersect: true}, true)
             if (points.length) {
               const firstPoint = points[0];
               const countryName = pieChart.data.labels ? pieChart.data.labels[firstPoint.index] : '';
