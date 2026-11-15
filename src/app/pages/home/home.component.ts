@@ -4,6 +4,7 @@ import Chart from 'chart.js/auto';
 import {DataService} from '@services/data.service';
 import {HomeView} from '@models/home-view.model';
 import {CountryMedals} from '@models/country-medals.model';
+import {Indicator} from '@models/indicator.model';
 
 @Component({
   selector: 'app-home',
@@ -12,10 +13,9 @@ import {CountryMedals} from '@models/country-medals.model';
 })
 export class HomeComponent implements OnInit {
   public pieChart!: Chart<"pie", number[], string>;
-  public totalCountries: number = 0
-  public totalJOs: number = 0
   public error!: string
-  titlePage: string = "Medals per Country";
+  public titlePage: string = "Medals per Country";
+  public indicators: Indicator[] = []
 
   constructor(private router: Router, private dataService: DataService) {
   }
@@ -24,11 +24,9 @@ export class HomeComponent implements OnInit {
     this.dataService.getHomeView().subscribe(
       {
         next: (homeView: HomeView) => {
-          this.totalCountries = homeView.totalCountries;
-          this.totalJOs = homeView.totalGames
-
           const countries: string[] = homeView.medalsPerCountry.map((countryMedals: CountryMedals): string => countryMedals.country);
           const medals: number[] = homeView.medalsPerCountry.map((countryMedals: CountryMedals): number => countryMedals.totalMedals);
+          this.indicators = this.buildIndicators(homeView);
           this.buildPieChart(countries, medals);
         },
         error: (error: Error) => {
@@ -37,7 +35,7 @@ export class HomeComponent implements OnInit {
         }
       })
   }
-
+  
   buildPieChart(countries: string[], medals: number[]) {
     const pieChart = new Chart("DashboardPieChart", {
       type: 'pie',
@@ -65,6 +63,19 @@ export class HomeComponent implements OnInit {
       }
     });
     this.pieChart = pieChart;
+  }
+
+  private buildIndicators(homeView: HomeView): Indicator[] {
+    return [
+      {
+        label: "Number of JOs",
+        value: homeView.totalGames
+      },
+      {
+        label: "Number of countries",
+        value: homeView.totalCountries
+      }
+    ]
   }
 }
 
