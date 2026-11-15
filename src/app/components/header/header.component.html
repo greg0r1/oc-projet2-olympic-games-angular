@@ -1,0 +1,13 @@
+<div>
+  <div class="center">
+    <div>{{ pageTitle }}</div>
+  </div>
+  <div class="split">
+    @for (indicator of indicators; track indicator.label) {
+      <div>
+        <p>{{ indicator.label }}</p>
+        <p>{{ indicator.value }}</p>
+      </div>
+    }
+  </div>
+</div>
