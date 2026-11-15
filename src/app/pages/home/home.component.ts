@@ -2,7 +2,8 @@ import {Component, OnInit} from '@angular/core';
 import {Router} from '@angular/router';
 import Chart from 'chart.js/auto';
 import {DataService} from '@services/data.service';
-import {Olympic} from '@models/olympic.model';
+import {HomeView} from '@models/home-view.model';
+import {CountryMedals} from '@models/country-medals.model';
 
 @Component({
   selector: 'app-home',
@@ -20,18 +21,15 @@ export class HomeComponent implements OnInit {
   }
 
   ngOnInit() {
-    this.dataService.getOlympics().subscribe(
+    this.dataService.getHomeView().subscribe(
       {
-        next: (data: Olympic[]) => {
-          console.log(`Liste des données : ${JSON.stringify(data)}`);
-          if (data && data.length > 0) {
-            this.totalJOs = Array.from(new Set(data.map((i: any) => i.participations.map((f: any) => f.year)).flat())).length;
-            const countries: string[] = data.map((i: any) => i.country);
-            this.totalCountries = countries.length;
-            const medals = data.map((i: any) => i.participations.map((i: any) => (i.medalsCount)));
-            const sumOfAllMedalsYears = medals.map((i) => i.reduce((acc: any, i: any) => acc + i, 0));
-            this.buildPieChart(countries, sumOfAllMedalsYears);
-          }
+        next: (homeView: HomeView) => {
+          this.totalCountries = homeView.totalCountries;
+          this.totalJOs = homeView.totalGames
+
+          const countries: string[] = homeView.medalsPerCountry.map((countryMedals: CountryMedals): string => countryMedals.country);
+          const medals: number[] = homeView.medalsPerCountry.map((countryMedals: CountryMedals): number => countryMedals.totalMedals);
+          this.buildPieChart(countries, medals);
         },
         error: (error: Error) => {
           console.log(`erreur : ${error}`);
@@ -40,14 +38,14 @@ export class HomeComponent implements OnInit {
       })
   }
 
-  buildPieChart(countries: string[], sumOfAllMedalsYears: number[]) {
+  buildPieChart(countries: string[], medals: number[]) {
     const pieChart = new Chart("DashboardPieChart", {
       type: 'pie',
       data: {
         labels: countries,
         datasets: [{
           label: 'Medals',
-          data: sumOfAllMedalsYears,
+          data: medals,
           backgroundColor: ['#0b868f', '#adc3de', '#7a3c53', '#8f6263', 'orange', '#94819d'],
           hoverOffset: 4
         }],
