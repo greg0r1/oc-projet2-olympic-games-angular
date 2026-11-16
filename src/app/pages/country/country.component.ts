@@ -1,5 +1,5 @@
 import {Component, OnInit} from '@angular/core';
-import {ActivatedRoute, Router} from '@angular/router';
+import {ActivatedRoute} from '@angular/router';
 
 import {CountryView} from '@models/country-view.model';
 import {Indicator} from '@models/indicator.model';
@@ -17,7 +17,7 @@ export class CountryComponent implements OnInit {
   public years: number[] = [];
   public medals: number[] = [];
 
-  constructor(private route: ActivatedRoute, private router: Router, private dataService: DataService) {
+  constructor(private route: ActivatedRoute, private dataService: DataService) {
   }
 
   ngOnInit() {

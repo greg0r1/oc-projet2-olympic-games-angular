@@ -31,15 +31,14 @@ export class HomeComponent implements OnInit {
             return {
               label: countryMedals.country,
               value: countryMedals.totalMedals,
-            }
+            };
           });
           this.medalsPerCountry = homeView.medalsPerCountry;
         },
         error: (error: Error) => {
-          console.log(`erreur : ${error}`);
           this.error = error.message;
         }
-      })
+      });
   }
 
   public onCountrySelected(index: number) {
@@ -57,7 +56,7 @@ export class HomeComponent implements OnInit {
         label: "Number of countries",
         value: homeView.totalCountries
       }
-    ]
+    ];
   }
 }
 
