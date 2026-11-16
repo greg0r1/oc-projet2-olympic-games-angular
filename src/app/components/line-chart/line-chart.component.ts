@@ -1,0 +1,56 @@
+import {
+  AfterViewInit,
+  Component,
+  ElementRef,
+  Input,
+  OnChanges,
+  OnDestroy,
+  ViewChild
+} from '@angular/core';
+import Chart from 'chart.js/auto';
+
+@Component({
+  selector: 'app-line-chart',
+  templateUrl: './line-chart.component.html',
+  styleUrl: './line-chart.component.scss'
+})
+export class LineChartComponent implements OnChanges, AfterViewInit, OnDestroy {
+  @Input({required: true}) labels!: number[];
+  @Input({required: true}) values!: number[];
+  @ViewChild('canvas') canvas!: ElementRef<HTMLCanvasElement>;
+  private lineChart: Chart<"line", number[], number> | undefined;
+
+  ngOnChanges(): void {
+    if (!this.lineChart) return;
+    this.lineChart.data.labels = this.labels;
+    this.lineChart.data.datasets[0].data = this.values;
+    this.lineChart.update();
+  }
+
+  ngAfterViewInit(): void {
+    this.buildLineChart();
+  }
+
+  ngOnDestroy(): void {
+    this.lineChart?.destroy();
+  }
+
+  private buildLineChart() {
+    this.lineChart = new Chart(this.canvas.nativeElement, {
+      type: 'line',
+      data: {
+        labels: this.labels,
+        datasets: [
+          {
+            label: "medals",
+            data: this.values,
+            backgroundColor: '#0b868f'
+          },
+        ]
+      },
+      options: {
+        aspectRatio: 2.5
+      }
+    });
+  }
+}

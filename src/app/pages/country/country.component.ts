@@ -1,6 +1,5 @@
 import {Component, OnInit} from '@angular/core';
 import {ActivatedRoute, Router} from '@angular/router';
-import Chart from 'chart.js/auto';
 
 import {CountryView} from '@models/country-view.model';
 import {Indicator} from '@models/indicator.model';
@@ -12,10 +11,11 @@ import {DataService} from '@services/data.service';
   styleUrls: ['./country.component.scss']
 })
 export class CountryComponent implements OnInit {
-  public lineChart!: Chart<"line", number[], number>;
   public titlePage: string = '';
   public error!: string;
   public indicators: Indicator[] = [];
+  public years: number[] = [];
+  public medals: number[] = [];
 
   constructor(private route: ActivatedRoute, private router: Router, private dataService: DataService) {
   }
@@ -25,38 +25,16 @@ export class CountryComponent implements OnInit {
     if (!countryName) return;
     this.dataService.getCountryView(countryName).subscribe({
       next: (countryView: CountryView | undefined): void => {
-        if (!countryView) return
-
+        if (!countryView) return;
         this.titlePage = countryView.country;
-        const years: number[] = countryView.years;
-        const medals: number[] = countryView.medalsPerYear;
+        this.years = countryView.years;
+        this.medals = countryView.medalsPerYear;
         this.indicators = this.buildIndicators(countryView);
-        this.buildChart(years, medals);
       },
       error: (error: Error): void => {
-        this.error = error.message
-      }
-    })
-  }
-
-  buildChart(years: number[], medals: number[]) {
-    const lineChart = new Chart("countryChart", {
-      type: 'line',
-      data: {
-        labels: years,
-        datasets: [
-          {
-            label: "medals",
-            data: medals,
-            backgroundColor: '#0b868f'
-          },
-        ]
-      },
-      options: {
-        aspectRatio: 2.5
+        this.error = error.message;
       }
     });
-    this.lineChart = lineChart;
   }
 
   private buildIndicators(countryView: CountryView): Indicator[] {
@@ -73,6 +51,6 @@ export class CountryComponent implements OnInit {
         label: "Total Number of athletes",
         value: countryView.totalAthletes
       }
-    ]
+    ];
   }
 }
