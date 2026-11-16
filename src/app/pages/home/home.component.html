@@ -5,5 +5,8 @@
     [indicators]="indicators"
     [pageTitle]="titlePage">
   </app-header>
-  <canvas id="DashboardPieChart">{{ pieChart }}</canvas>
+  <app-pie-chart
+    (itemSelected)="onCountrySelected($event)"
+    [items]="chartItems"
+  ></app-pie-chart>
 </div>

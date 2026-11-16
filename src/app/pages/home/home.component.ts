@@ -1,10 +1,11 @@
 import {Component, OnInit} from '@angular/core';
 import {Router} from '@angular/router';
-import Chart from 'chart.js/auto';
+
 import {DataService} from '@services/data.service';
 import {HomeView} from '@models/home-view.model';
 import {CountryMedals} from '@models/country-medals.model';
 import {Indicator} from '@models/indicator.model';
+import {ChartItem} from '@models/chart-item.model';
 
 @Component({
   selector: 'app-home',
@@ -12,10 +13,11 @@ import {Indicator} from '@models/indicator.model';
   styleUrls: ['./home.component.scss'],
 })
 export class HomeComponent implements OnInit {
-  public pieChart!: Chart<"pie", number[], string>;
-  public error!: string
+  public error!: string;
   public titlePage: string = "Medals per Country";
-  public indicators: Indicator[] = []
+  public indicators: Indicator[] = [];
+  public chartItems: ChartItem[] = [];
+  private medalsPerCountry: CountryMedals[] = [];
 
   constructor(private router: Router, private dataService: DataService) {
   }
@@ -24,45 +26,24 @@ export class HomeComponent implements OnInit {
     this.dataService.getHomeView().subscribe(
       {
         next: (homeView: HomeView) => {
-          const countries: string[] = homeView.medalsPerCountry.map((countryMedals: CountryMedals): string => countryMedals.country);
-          const medals: number[] = homeView.medalsPerCountry.map((countryMedals: CountryMedals): number => countryMedals.totalMedals);
           this.indicators = this.buildIndicators(homeView);
-          this.buildPieChart(countries, medals);
+          this.chartItems = homeView.medalsPerCountry.map((countryMedals: CountryMedals): ChartItem => {
+            return {
+              label: countryMedals.country,
+              value: countryMedals.totalMedals,
+            };
+          });
+          this.medalsPerCountry = homeView.medalsPerCountry;
         },
         error: (error: Error) => {
-          console.log(`erreur : ${error}`);
-          this.error = error.message
+          this.error = error.message;
         }
-      })
+      });
   }
-  
-  buildPieChart(countries: string[], medals: number[]) {
-    const pieChart = new Chart("DashboardPieChart", {
-      type: 'pie',
-      data: {
-        labels: countries,
-        datasets: [{
-          label: 'Medals',
-          data: medals,
-          backgroundColor: ['#0b868f', '#adc3de', '#7a3c53', '#8f6263', 'orange', '#94819d'],
-          hoverOffset: 4
-        }],
-      },
-      options: {
-        aspectRatio: 2.5,
-        onClick: (e) => {
-          if (e.native) {
-            const points = pieChart.getElementsAtEventForMode(e.native, 'point', {intersect: true}, true)
-            if (points.length) {
-              const firstPoint = points[0];
-              const countryName = pieChart.data.labels ? pieChart.data.labels[firstPoint.index] : '';
-              this.router.navigate(['country', countryName]);
-            }
-          }
-        }
-      }
-    });
-    this.pieChart = pieChart;
+
+  public onCountrySelected(index: number) {
+    const item: CountryMedals = this.medalsPerCountry[index];
+    void this.router.navigate(['/country', item.country]);
   }
 
   private buildIndicators(homeView: HomeView): Indicator[] {
@@ -75,7 +56,7 @@ export class HomeComponent implements OnInit {
         label: "Number of countries",
         value: homeView.totalCountries
       }
-    ]
+    ];
   }
 }
 
