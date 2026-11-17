@@ -1,4 +1,5 @@
-import {Component, OnInit} from '@angular/core';
+import {Component, DestroyRef, OnInit} from '@angular/core';
+import {takeUntilDestroyed} from '@angular/core/rxjs-interop';
 import {ActivatedRoute} from '@angular/router';
 
 import {CountryView} from '@models/country-view.model';
@@ -17,24 +18,26 @@ export class CountryComponent implements OnInit {
   public years: number[] = [];
   public medals: number[] = [];
 
-  constructor(private route: ActivatedRoute, private dataService: DataService) {
+  constructor(private route: ActivatedRoute, private dataService: DataService, private destroyRef: DestroyRef) {
   }
 
-  ngOnInit() {
+  ngOnInit(): void {
     const countryName: string | null = this.route.snapshot.paramMap.get('countryName');
     if (!countryName) return;
-    this.dataService.getCountryView(countryName).subscribe({
-      next: (countryView: CountryView | undefined): void => {
-        if (!countryView) return;
-        this.titlePage = countryView.country;
-        this.years = countryView.years;
-        this.medals = countryView.medalsPerYear;
-        this.indicators = this.buildIndicators(countryView);
-      },
-      error: (error: Error): void => {
-        this.error = error.message;
-      }
-    });
+    this.dataService.getCountryView(countryName)
+      .pipe(takeUntilDestroyed(this.destroyRef))
+      .subscribe({
+        next: (countryView: CountryView | undefined): void => {
+          if (!countryView) return;
+          this.titlePage = countryView.country;
+          this.years = countryView.years;
+          this.medals = countryView.medalsPerYear;
+          this.indicators = this.buildIndicators(countryView);
+        },
+        error: (error: Error): void => {
+          this.error = error.message;
+        }
+      });
   }
 
   private buildIndicators(countryView: CountryView): Indicator[] {

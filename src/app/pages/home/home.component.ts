@@ -1,11 +1,12 @@
-import {Component, OnInit} from '@angular/core';
+import {Component, DestroyRef, OnInit} from '@angular/core';
+import {takeUntilDestroyed} from '@angular/core/rxjs-interop';
 import {Router} from '@angular/router';
 
-import {DataService} from '@services/data.service';
 import {HomeView} from '@models/home-view.model';
 import {CountryMedals} from '@models/country-medals.model';
 import {Indicator} from '@models/indicator.model';
 import {ChartItem} from '@models/chart-item.model';
+import {DataService} from '@services/data.service';
 
 @Component({
   selector: 'app-home',
@@ -19,29 +20,31 @@ export class HomeComponent implements OnInit {
   public chartItems: ChartItem[] = [];
   private medalsPerCountry: CountryMedals[] = [];
 
-  constructor(private router: Router, private dataService: DataService) {
+  constructor(private router: Router, private dataService: DataService, private destroyRef: DestroyRef) {
   }
 
-  ngOnInit() {
-    this.dataService.getHomeView().subscribe(
-      {
-        next: (homeView: HomeView) => {
-          this.indicators = this.buildIndicators(homeView);
-          this.chartItems = homeView.medalsPerCountry.map((countryMedals: CountryMedals): ChartItem => {
-            return {
-              label: countryMedals.country,
-              value: countryMedals.totalMedals,
-            };
-          });
-          this.medalsPerCountry = homeView.medalsPerCountry;
-        },
-        error: (error: Error) => {
-          this.error = error.message;
-        }
-      });
+  ngOnInit(): void {
+    this.dataService.getHomeView()
+      .pipe(takeUntilDestroyed(this.destroyRef))
+      .subscribe(
+        {
+          next: (homeView: HomeView): void => {
+            this.indicators = this.buildIndicators(homeView);
+            this.chartItems = homeView.medalsPerCountry.map((countryMedals: CountryMedals): ChartItem => {
+              return {
+                label: countryMedals.country,
+                value: countryMedals.totalMedals,
+              };
+            });
+            this.medalsPerCountry = homeView.medalsPerCountry;
+          },
+          error: (error: Error): void => {
+            this.error = error.message;
+          }
+        });
   }
 
-  public onCountrySelected(index: number) {
+  public onCountrySelected(index: number): void {
     const item: CountryMedals = this.medalsPerCountry[index];
     void this.router.navigate(['/country', item.country]);
   }
