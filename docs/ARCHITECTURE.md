@@ -22,6 +22,10 @@ src/app/
 └── models/        interfaces TypeScript
 ```
 
+Schéma de l'architecture (réalisé avec draw.io) :
+
+![Schéma de l'architecture front-end](architecture.drawio.png)
+
 ## 3. Rôle de chaque élément
 
 | Élément                                     | Rôle                                                                                     | Reçoit                                  | Renvoie / émet                                                 |
