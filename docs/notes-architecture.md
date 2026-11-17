@@ -72,10 +72,8 @@ Schéma de l'architecture (réalisé avec draw.io) :
 - **Singleton (service avec `providedIn: 'root'`)** : une seule instance de `DataService` partagée dans toute l'application. Un seul point d'appel aux données, plus de code dupliqué (P3).
 - **Séparation des responsabilités (composant / service)** : le composant affiche, le service récupère et prépare les données. Les calculs et l'appel HTTP sortent des composants (P2, P3).
 - **Pages (conteneurs) / composants (affichage)** : les pages récupèrent les données via le service, les composants réutilisables (par exemple `HeaderComponent`) se contentent d'afficher ce qu'on leur donne.
-- **Observer (observables RxJS)** : le service renvoie des observables, le template s'y abonne avec le pipe `async`. Pas de `subscribe` manuel et désinscription automatique (P4).
 - **Un seul `DataService`** : pour ce projet, il fait l'appel HTTP et les calculs, comme demandé dans les spécifications. Pas de service API séparé pour ne pas compliquer la structure.
 - **Observer (observables RxJS)** : le service renvoie des observables, les pages s'y abonnent avec `subscribe` et `takeUntilDestroyed(destroyRef)`, qui désabonne à la destruction du composant (P4).
--
 
 ### 2.4 Impact pour le futur back-end
 
