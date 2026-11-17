@@ -69,7 +69,6 @@ Schéma de l'architecture (réalisé avec draw.io) :
     - route par id, redirection vers NotFound pour un pays inexistant, affichage des erreurs
     - constantes restantes (couleurs, ratio, libellés, nom du paramètre)
     - le CSS global
-    - la désinscription des observables, que la consigne demande
     - le test responsive et le README
     - les états loading et empty (« Aucune donnée »), en plus de l'état error
     - l'accessibilité de base (contrastes, focus visibles, `aria-label`, description textuelle des graphiques)
