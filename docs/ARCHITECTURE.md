@@ -37,11 +37,11 @@ src/app/
 
 - Schéma simple : JSON → `DataService` → page → composants d'affichage
 - Ce qui descend (`@Input`) :
-  - `HomeComponent` donne `indicators` et `titlePage` à `HeaderComponent`.
-  - `HomeComponent` donne `chartItems` à `PieChartComponent`.
-  - `CountryComponent` donne `years` et `medals` à `LineChartComponent`.
+    - `HomeComponent` donne `indicators` et `titlePage` à `HeaderComponent`.
+    - `HomeComponent` donne `chartItems` à `PieChartComponent`.
+    - `CountryComponent` donne `years` et `medals` à `LineChartComponent`.
 - Ce qui remonte (`@Output`) :
-  - `PieChartComponent` émet l'index du secteur cliqué (`itemSelected`), `HomeComponent` reçoit l'index, retrouve le pays dans sa liste et navigue.
+    - `PieChartComponent` émet l'index du secteur cliqué (`itemSelected`), `HomeComponent` reçoit l'index, retrouve le pays dans sa liste et navigue.
 
 ## 5. Choix de conception
 
@@ -49,7 +49,7 @@ src/app/
 - `ChartItem` générique : le graphique ne connaît pas le métier, il affiche libellé + valeur.
 - Index émis par le camembert : le graphique ignore nom et id du pays ; la page retrouve le pays dans sa liste (même ordre que `chartItems`).
 - `shareReplay(1)` dans le constructeur : un seul flux, une seule requête HTTP partagée entre les pages.
-- Alias de chemin : imports lisibles, sans `../../..`.
+- Alias de chemin : imports lisibles, sans `../../../..`.
 
 ## 6. Alternatives écartées
 
@@ -62,10 +62,10 @@ src/app/
 - `DataService` fait HTTP + calculs : à scinder si l'application grossit.
 - Évolution prévue : seuls `DataService` et les modèles de données changent ; les pages et composants ne sont pas touchés.
 - Reporté à l'exercice 2 :
-  - route par id, redirection vers NotFound pour un pays inexistant, affichage des erreurs
-  - constantes restantes (couleurs, ratio, libellés, nom du paramètre)
-  - le CSS global
-  - la désinscription des observables, que la consigne demande
-  - le test responsive et le README
-  - les états loading et empty (« Aucune donnée »), en plus de l'état error
-  - l'accessibilité de base (contrastes, focus visibles, `aria-label`, description textuelle des graphiques)
+    - route par id, redirection vers NotFound pour un pays inexistant, affichage des erreurs
+    - constantes restantes (couleurs, ratio, libellés, nom du paramètre)
+    - le CSS global
+    - la désinscription des observables, que la consigne demande
+    - le test responsive et le README
+    - les états loading et empty (« Aucune donnée »), en plus de l'état error
+    - l'accessibilité de base (contrastes, focus visibles, `aria-label`, description textuelle des graphiques)
