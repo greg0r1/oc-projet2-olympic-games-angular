@@ -1,12 +1,12 @@
-import {Component, DestroyRef, OnInit} from '@angular/core';
-import {takeUntilDestroyed} from '@angular/core/rxjs-interop';
-import {Router} from '@angular/router';
+import { Component, DestroyRef, OnInit } from '@angular/core';
+import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
+import { Router } from '@angular/router';
 
-import {HomeView} from '@models/home-view.model';
-import {CountryMedals} from '@models/country-medals.model';
-import {Indicator} from '@models/indicator.model';
-import {ChartItem} from '@models/chart-item.model';
-import {DataService} from '@services/data.service';
+import { HomeView } from '@models/home-view.model';
+import { CountryMedals } from '@models/country-medals.model';
+import { Indicator } from '@models/indicator.model';
+import { ChartItem } from '@models/chart-item.model';
+import { DataService } from '@services/data.service';
 
 @Component({
   selector: 'app-home',
@@ -47,7 +47,7 @@ export class HomeComponent implements OnInit {
 
   public onCountrySelected(index: number): void {
     const item: CountryMedals = this.medalsPerCountry[index];
-    void this.router.navigate(['/country', item.country]);
+    void this.router.navigate(['/country', item.id]);
   }
 
   private buildIndicators(homeView: HomeView): Indicator[] {
