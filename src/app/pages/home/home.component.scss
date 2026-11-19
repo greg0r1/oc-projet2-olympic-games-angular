@@ -1,6 +1,32 @@
+@use '../../../styles/breakpoints' as bp;
+
+.page-grid {
+  display: grid;
+  grid-template-columns: repeat(bp.$columns-mobile, minmax(0, 1fr)); // mobile : 4 colonnes
+  gap: 20px;
+
+  app-header,
+  .intro,
+  app-pie-chart {
+    grid-column: 1 / -1; // toute la largeur, par défaut
+  }
+
+  @media (min-width: bp.$breakpoint-tablet) {
+    grid-template-columns: repeat(bp.$columns-tablet, minmax(0, 1fr)); // tablette : 8 colonnes
+  }
+
+  @media (min-width: bp.$breakpoint-desktop) {
+    grid-template-columns: repeat(bp.$columns-desktop, minmax(0, 1fr)); // desktop : 12 colonnes
+
+    app-pie-chart {
+      grid-column: 3 / span 8; // colonnes 3 à 10
+    }
+  }
+}
+
 .intro {
   max-width: 60ch;
-  margin: 16px auto;
+  margin: 36px auto;
   padding: 0 16px;
   text-align: center;
   line-height: 1.5;

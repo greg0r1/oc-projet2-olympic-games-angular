@@ -1,0 +1,14 @@
+@use '../../../styles/breakpoints' as bp;
+
+.chart-container {
+  position: relative;
+  height: auto; // mobile
+
+  @media (min-width: bp.$breakpoint-tablet) {
+    height: 350px; // tablette
+  }
+
+  @media (min-width: bp.$breakpoint-desktop) {
+    height: 390px; // desktop
+  }
+}

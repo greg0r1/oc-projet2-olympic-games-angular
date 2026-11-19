@@ -10,7 +10,7 @@ import {
   ViewChild
 } from '@angular/core';
 
-import {ChartItem} from '@models/chart-item.model';
+import { ChartItem } from '@models/chart-item.model';
 import Chart from 'chart.js/auto';
 
 @Component({
@@ -19,24 +19,24 @@ import Chart from 'chart.js/auto';
   styleUrl: './pie-chart.component.scss'
 })
 export class PieChartComponent implements AfterViewInit, OnChanges, OnDestroy {
-  @Input({required: true}) items!: ChartItem[];
+  @Input({ required: true }) items!: ChartItem[];
   @Output() itemSelected: EventEmitter<number> = new EventEmitter<number>();
   @ViewChild('canvas') canvas!: ElementRef<HTMLCanvasElement>;
   private pieChart: Chart<"pie", number[], string> | undefined;
 
   ngOnChanges() {
-    if (!this.pieChart) return
+    if (!this.pieChart) return;
     this.pieChart.data.labels = this.getLabels(this.items);
     this.pieChart.data.datasets[0].data = this.getValues(this.items);
     this.pieChart.update();
   }
 
   ngAfterViewInit() {
-    this.buildPieChart()
+    this.buildPieChart();
   }
 
   ngOnDestroy() {
-    this.pieChart?.destroy()
+    this.pieChart?.destroy();
   }
 
   private buildPieChart() {
@@ -52,13 +52,13 @@ export class PieChartComponent implements AfterViewInit, OnChanges, OnDestroy {
         }],
       },
       options: {
-        aspectRatio: 2.5,
+        maintainAspectRatio: false,
         onClick: (e) => {
           if (e.native) {
-            const points = this.pieChart?.getElementsAtEventForMode(e.native, 'point', {intersect: true}, true)
+            const points = this.pieChart?.getElementsAtEventForMode(e.native, 'point', { intersect: true }, true);
             if (points?.length) {
               const firstPoint = points[0];
-              this.itemSelected.emit(firstPoint.index)
+              this.itemSelected.emit(firstPoint.index);
             }
           }
         }
@@ -67,10 +67,10 @@ export class PieChartComponent implements AfterViewInit, OnChanges, OnDestroy {
   }
 
   private getLabels(items: ChartItem[]): string[] {
-    return items.map((chartItem: ChartItem): string => chartItem.label)
+    return items.map((chartItem: ChartItem): string => chartItem.label);
   }
 
   private getValues(items: ChartItem[]): number[] {
-    return items.map((chartItem: ChartItem): number => chartItem.value)
+    return items.map((chartItem: ChartItem): number => chartItem.value);
   }
 }
