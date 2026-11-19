@@ -1,11 +1,11 @@
-import {HttpClient} from '@angular/common/http';
-import {Injectable} from '@angular/core';
-import {catchError, map, Observable, shareReplay, throwError} from 'rxjs';
+import { HttpClient } from '@angular/common/http';
+import { Injectable } from '@angular/core';
+import { catchError, map, Observable, shareReplay, throwError } from 'rxjs';
 
-import {Olympic} from '@models/olympic.model';
-import {Participation} from '@models/participation.model';
-import {HomeView} from '@models/home-view.model';
-import {CountryView} from '@models/country-view.model';
+import { Olympic } from '@models/olympic.model';
+import { Participation } from '@models/participation.model';
+import { HomeView } from '@models/home-view.model';
+import { CountryView } from '@models/country-view.model';
 
 @Injectable({
   providedIn: 'root'
@@ -21,7 +21,7 @@ export class DataService {
       catchError(() => {
         return throwError(() => new Error(this.LOAD_ERROR_MESSAGE));
       }),
-      shareReplay(1))
+      shareReplay(1));
   }
 
   public getOlympics(): Observable<Olympic[]> {
@@ -38,15 +38,15 @@ export class DataService {
             id: olympic.id,
             country: olympic.country,
             totalMedals: this.sumMedals(olympic.participations)
-          }
+          };
         })
-      }
+      };
     }));
   }
 
-  public getCountryView(country: string): Observable<CountryView | undefined> {
+  public getCountryView(id: number): Observable<CountryView | undefined> {
     return this.olympic$.pipe(map((olympics: Olympic[]) => {
-      const countryOlympic: Olympic | undefined = this.findCountry(olympics, country);
+      const countryOlympic: Olympic | undefined = this.findCountry(olympics, id);
       if (!countryOlympic) return undefined;
       const countryParticipations: Participation[] = countryOlympic.participations;
 
@@ -57,24 +57,24 @@ export class DataService {
         totalAthletes: this.sumAthletes(countryParticipations),
         years: countryParticipations.map((participation: Participation): number => participation.year),
         medalsPerYear: countryParticipations.map((participation: Participation): number => participation.medalsCount)
-      }
+      };
     }));
   }
 
   private countGames(olympics: Olympic[]): number {
-    return Array.from(new Set(olympics.map((olympic: Olympic) => olympic.participations.map((participation: Participation): number => participation.year)).flat())).length
+    return Array.from(new Set(olympics.map((olympic: Olympic) => olympic.participations.map((participation: Participation): number => participation.year)).flat())).length;
   }
 
-  private findCountry(olympics: Olympic[], name: string): Olympic | undefined {
-    return olympics.find((olympic: Olympic) => olympic.country === name)
+  private findCountry(olympics: Olympic[], id: number): Olympic | undefined {
+    return olympics.find((olympic: Olympic) => olympic.id === id);
   }
 
   private sumMedals(participations: Participation[]): number {
-    return participations.reduce((sum: number, participation: Participation): number => sum + participation.medalsCount, 0)
+    return participations.reduce((sum: number, participation: Participation): number => sum + participation.medalsCount, 0);
   }
 
   private sumAthletes(participations: Participation[]): number {
-    return participations.reduce((sum: number, participation: Participation): number => sum + participation.athleteCount, 0)
+    return participations.reduce((sum: number, participation: Participation): number => sum + participation.athleteCount, 0);
   }
 
 }

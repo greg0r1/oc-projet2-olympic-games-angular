@@ -1,10 +1,10 @@
-import {Component, DestroyRef, OnInit} from '@angular/core';
-import {takeUntilDestroyed} from '@angular/core/rxjs-interop';
-import {ActivatedRoute} from '@angular/router';
+import { Component, DestroyRef, OnInit } from '@angular/core';
+import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
+import { ActivatedRoute, Router } from '@angular/router';
 
-import {CountryView} from '@models/country-view.model';
-import {Indicator} from '@models/indicator.model';
-import {DataService} from '@services/data.service';
+import { CountryView } from '@models/country-view.model';
+import { Indicator } from '@models/indicator.model';
+import { DataService } from '@services/data.service';
 
 @Component({
   selector: 'app-country',
@@ -18,17 +18,25 @@ export class CountryComponent implements OnInit {
   public years: number[] = [];
   public medals: number[] = [];
 
-  constructor(private route: ActivatedRoute, private dataService: DataService, private destroyRef: DestroyRef) {
+  constructor(private route: ActivatedRoute, private router: Router, private dataService: DataService, private destroyRef: DestroyRef) {
   }
 
   ngOnInit(): void {
-    const countryName: string | null = this.route.snapshot.paramMap.get('countryName');
-    if (!countryName) return;
-    this.dataService.getCountryView(countryName)
+    const countryId: number = Number(this.route.snapshot.paramMap.get('id'));
+    if (!Number.isInteger(countryId)) {
+      this.redirectToNotFound();
+      return;
+    }
+
+    this.dataService.getCountryView(countryId)
       .pipe(takeUntilDestroyed(this.destroyRef))
       .subscribe({
         next: (countryView: CountryView | undefined): void => {
-          if (!countryView) return;
+          if (!countryView) {
+            this.redirectToNotFound();
+            return;
+          }
+
           this.titlePage = countryView.country;
           this.years = countryView.years;
           this.medals = countryView.medalsPerYear;
@@ -55,5 +63,9 @@ export class CountryComponent implements OnInit {
         value: countryView.totalAthletes
       }
     ];
+  }
+
+  private redirectToNotFound(): void {
+    void this.router.navigate(['/not-found'], { replaceUrl: true });
   }
 }
