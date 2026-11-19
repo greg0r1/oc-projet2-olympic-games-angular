@@ -54,6 +54,7 @@ Schéma de l'architecture (réalisé avec draw.io) :
 - Index émis par le camembert : le graphique ignore nom et id du pays ; la page retrouve le pays dans sa liste (même ordre que `chartItems`).
 - `shareReplay(1)` dans le constructeur : un seul flux, une seule requête HTTP partagée entre les pages.
 - Alias de chemin : imports lisibles, sans `../../../..`.
+- Route `/country/:id` : l'identifiant est stable et unique, alors que le nom peut changer ou contenir des caractères spéciaux (espaces, accents). Un id invalide ou inconnu redirige vers `/not-found` avec `replaceUrl`, pour que le bouton « précédent » ne ramène pas sur l'URL invalide.
 
 ## 6. Alternatives écartées
 
@@ -66,7 +67,7 @@ Schéma de l'architecture (réalisé avec draw.io) :
 - `DataService` fait HTTP + calculs : à scinder si l'application grossit.
 - Évolution prévue : seuls `DataService` et les modèles de données changent ; les pages et composants ne sont pas touchés.
 - Reporté à l'exercice 2 :
-    - route par id, redirection vers NotFound pour un pays inexistant, affichage des erreurs
+    - affichage des erreurs
     - constantes restantes (couleurs, ratio, libellés, nom du paramètre)
     - le CSS global
     - le test responsive et le README
