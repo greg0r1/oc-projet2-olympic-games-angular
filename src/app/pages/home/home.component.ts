@@ -18,6 +18,7 @@ export class HomeComponent implements OnInit {
   public titlePage: string = "Medals per Country";
   public indicators: Indicator[] = [];
   public chartItems: ChartItem[] = [];
+  public readonly introText: string = "This chart shows the total number of medals won by each country, across all editions of the Olympic Games. Click a slice to see the details for that country.";
   private medalsPerCountry: CountryMedals[] = [];
 
   constructor(private router: Router, private dataService: DataService, private destroyRef: DestroyRef) {

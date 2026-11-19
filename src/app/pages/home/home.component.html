@@ -5,6 +5,7 @@
     [indicators]="indicators"
     [pageTitle]="titlePage">
   </app-header>
+  <p class="intro">{{ introText }}</p>
   <app-pie-chart
     (itemSelected)="onCountrySelected($event)"
     [items]="chartItems"
