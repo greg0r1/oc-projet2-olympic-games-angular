@@ -1,26 +1,29 @@
+@use '../../../styles/breakpoints' as bp;
+@use '../../../styles/layout';
 
-.wrapper-container {
-  display: flex;
-  justify-content: center;
+.page-grid {
+  @include layout.page-grid;
+
+  app-header,
+  .chart,
+  .center {
+    grid-column: 1 / -1; // toute la largeur, par défaut
+  }
+
+  @media (min-width: bp.$breakpoint-desktop) {
+    .chart {
+      grid-column: 3 / span 8; // colonnes 3 à 10
+    }
+  }
 }
 
-.container {
-  width: 50%;
-
-  h2 {
-    text-align: center;
-    color: gray;
-  }
+.chart h2 {
+  text-align: center;
+  color: gray;
 }
 
 .center {
   display: flex;
   justify-content: center;
   margin: 5px;
-}
-
-@media screen and (max-width: 1000px) {
-  .container {
-    width: 100%;
-  }
 }

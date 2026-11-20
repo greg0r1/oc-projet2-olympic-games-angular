@@ -1,0 +1,28 @@
+@use 'breakpoints' as bp;
+
+@mixin page-grid {
+  display: grid;
+  grid-template-columns: repeat(bp.$columns-mobile, minmax(0, 1fr));
+  gap: 20px;
+
+  @media (min-width: bp.$breakpoint-tablet) {
+    grid-template-columns: repeat(bp.$columns-tablet, minmax(0, 1fr)); // 8 colonnes
+  }
+
+  @media (min-width: bp.$breakpoint-desktop) {
+    grid-template-columns: repeat(bp.$columns-desktop, minmax(0, 1fr)); // 12 colonnes
+  }
+}
+
+@mixin chart-container {
+  position: relative;
+  height: 250px; // mobile
+
+  @media (min-width: bp.$breakpoint-tablet) {
+    height: 350px; // tablette
+  }
+
+  @media (min-width: bp.$breakpoint-desktop) {
+    height: 390px; // desktop
+  }
+}

@@ -15,13 +15,15 @@
 
 .split {
   display: grid;
-  grid-template-columns: 1fr; // mobile
+  grid-template-columns: 1fr; // mobile : 1 colonne
   gap: 20px;
   margin: 5px auto;
-  max-width: 400px;
+  max-width: 400px; // mobile : cartes pas trop larges
 
   @media (min-width: bp.$breakpoint-tablet) {
-    grid-template-columns: repeat(2, 1fr); // tablette et desktop
+    grid-template-columns: repeat(auto-fit, minmax(180px, 220px));
+    justify-content: center;
+    max-width: none;
   }
 
   div {

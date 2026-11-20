@@ -1,16 +1,14 @@
-<div>
+<div class="page-grid">
   <app-header
     [indicators]="indicators"
     [pageTitle]="titlePage">
   </app-header>
-  <div class="chart-container wrapper-container">
-    <div class="container">
-      <app-line-chart
-        [labels]="years"
-        [values]="medals"
-      ></app-line-chart>
-      <h2>Date</h2>
-    </div>
+  <div class="chart">
+    <app-line-chart
+      [labels]="years"
+      [values]="medals"
+    ></app-line-chart>
+    <h2>Date</h2>
   </div>
   <div class="center">
     <a routerLink="">Go back</a>
