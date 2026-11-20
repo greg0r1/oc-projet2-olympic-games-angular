@@ -13,3 +13,16 @@
     grid-template-columns: repeat(bp.$columns-desktop, minmax(0, 1fr)); // 12 colonnes
   }
 }
+
+@mixin chart-container {
+  position: relative;
+  height: 250px; // mobile
+
+  @media (min-width: bp.$breakpoint-tablet) {
+    height: 350px; // tablette
+  }
+
+  @media (min-width: bp.$breakpoint-desktop) {
+    height: 390px; // desktop
+  }
+}
