@@ -15,8 +15,8 @@ import Chart from 'chart.js/auto';
   styleUrl: './line-chart.component.scss'
 })
 export class LineChartComponent implements OnChanges, AfterViewInit, OnDestroy {
-  @Input({required: true}) labels!: number[];
-  @Input({required: true}) values!: number[];
+  @Input({ required: true }) labels!: number[];
+  @Input({ required: true }) values!: number[];
   @ViewChild('canvas') canvas!: ElementRef<HTMLCanvasElement>;
   private lineChart: Chart<"line", number[], number> | undefined;
 
@@ -49,7 +49,7 @@ export class LineChartComponent implements OnChanges, AfterViewInit, OnDestroy {
         ]
       },
       options: {
-        aspectRatio: 2.5
+        maintainAspectRatio: false
       }
     });
   }
