@@ -5,6 +5,7 @@ import { ActivatedRoute, Router } from '@angular/router';
 import { CountryView } from '@models/country-view.model';
 import { Indicator } from '@models/indicator.model';
 import { DataService } from '@services/data.service';
+import { ViewStatus } from '@models/view-status.model';
 
 @Component({
   selector: 'app-country-detail-page',
@@ -13,7 +14,8 @@ import { DataService } from '@services/data.service';
 })
 export class CountryDetailPageComponent implements OnInit {
   public titlePage: string = '';
-  public error!: string;
+  public error: string = '';
+  public status: ViewStatus = 'loading';
   public indicators: Indicator[] = [];
   public years: number[] = [];
   public medals: number[] = [];
@@ -41,9 +43,11 @@ export class CountryDetailPageComponent implements OnInit {
           this.years = countryView.years;
           this.medals = countryView.medalsPerYear;
           this.indicators = this.buildIndicators(countryView);
+          this.status = this.years.length === 0 ? 'empty' : 'success';
         },
         error: (error: Error): void => {
           this.error = error.message;
+          this.status = 'error';
         }
       });
   }
