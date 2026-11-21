@@ -65,7 +65,7 @@ Schéma de l'architecture (réalisé avec draw.io) :
 | Calculs des totaux (médailles, athlètes, années)                                       | `services/data.service.ts`              | Les composants reçoivent des données prêtes à afficher et ne font plus de calculs.                                                                                      |
 | Titre de page + indicateurs (libellé et valeur), affichés sur `home` et `country`      | `components/` (`HeaderComponent`)       | Même structure sur les deux pages : un composant écrit une fois et réutilisé.                                                                                           |
 | Construction des graphiques (`buildPieChart` dans `home`, `buildChart` dans `country`) | `components/` (composants de graphique) | Les pages ne dessinent plus les graphiques elles-mêmes, les composants peuvent être réutilisés, et la destruction du graphique (`destroy()`) est écrite une seule fois. |
-| `home`, `country`, `not-found`                                                         | `pages/` (inchangés)                    | Les pages sont déjà séparées et bien placées.                                                                                                                           |
+| `home`, `country`, `not-found`                                                         | `pages/`                                | `home` devient `DashboardPageComponent`, `country` devient `CountryDetailPageComponent`, `not-found` reste. Ces noms viennent des specs.                                |
 
 ### 2.3 Patterns choisis
 

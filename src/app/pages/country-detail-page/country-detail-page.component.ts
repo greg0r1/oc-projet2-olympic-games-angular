@@ -7,11 +7,11 @@ import { Indicator } from '@models/indicator.model';
 import { DataService } from '@services/data.service';
 
 @Component({
-  selector: 'app-country',
-  templateUrl: './country.component.html',
-  styleUrls: ['./country.component.scss']
+  selector: 'app-country-detail-page',
+  templateUrl: './country-detail-page.component.html',
+  styleUrls: ['./country-detail-page.component.scss']
 })
-export class CountryComponent implements OnInit {
+export class CountryDetailPageComponent implements OnInit {
   public titlePage: string = '';
   public error!: string;
   public indicators: Indicator[] = [];

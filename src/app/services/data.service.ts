@@ -4,7 +4,7 @@ import { catchError, map, Observable, shareReplay, throwError } from 'rxjs';
 
 import { Olympic } from '@models/olympic.model';
 import { Participation } from '@models/participation.model';
-import { HomeView } from '@models/home-view.model';
+import { DashboardView } from '@models/dashboard-view.model';
 import { CountryView } from '@models/country-view.model';
 
 @Injectable({
@@ -28,7 +28,7 @@ export class DataService {
     return this.olympic$;
   }
 
-  public getHomeView(): Observable<HomeView> {
+  public getDashboardView(): Observable<DashboardView> {
     return this.olympic$.pipe(map((olympics: Olympic[]) => {
       return {
         totalCountries: olympics.length,
