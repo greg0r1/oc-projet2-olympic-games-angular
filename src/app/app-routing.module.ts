@@ -3,7 +3,7 @@ import { RouterModule, Routes } from '@angular/router';
 
 import { DashboardPageComponent } from '@pages/dashboard-page/dashboard-page.component';
 import { NotFoundComponent } from '@pages/not-found/not-found.component';
-import { CountryComponent } from "@pages/country/country.component";
+import { CountryDetailPageComponent } from "@pages/country-detail-page/country-detail-page.component";
 
 const routes: Routes = [
   {
@@ -12,7 +12,7 @@ const routes: Routes = [
   },
   {
     path: 'country/:id',
-    component: CountryComponent
+    component: CountryDetailPageComponent
   },
   {
     path: 'not-found',
