@@ -2,7 +2,7 @@ import { Component, DestroyRef, OnInit } from '@angular/core';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { Router } from '@angular/router';
 
-import { HomeView } from '@models/home-view.model';
+import { DashboardView } from '@models/dashboard-view.model';
 import { CountryMedals } from '@models/country-medals.model';
 import { Indicator } from '@models/indicator.model';
 import { ChartItem } from '@models/chart-item.model';
@@ -25,19 +25,19 @@ export class DashboardPageComponent implements OnInit {
   }
 
   ngOnInit(): void {
-    this.dataService.getHomeView()
+    this.dataService.getDashboardView()
       .pipe(takeUntilDestroyed(this.destroyRef))
       .subscribe(
         {
-          next: (homeView: HomeView): void => {
-            this.indicators = this.buildIndicators(homeView);
-            this.chartItems = homeView.medalsPerCountry.map((countryMedals: CountryMedals): ChartItem => {
+          next: (dashboardView: DashboardView): void => {
+            this.indicators = this.buildIndicators(dashboardView);
+            this.chartItems = dashboardView.medalsPerCountry.map((countryMedals: CountryMedals): ChartItem => {
               return {
                 label: countryMedals.country,
                 value: countryMedals.totalMedals,
               };
             });
-            this.medalsPerCountry = homeView.medalsPerCountry;
+            this.medalsPerCountry = dashboardView.medalsPerCountry;
           },
           error: (error: Error): void => {
             this.error = error.message;
@@ -50,15 +50,15 @@ export class DashboardPageComponent implements OnInit {
     void this.router.navigate(['/country', item.id]);
   }
 
-  private buildIndicators(homeView: HomeView): Indicator[] {
+  private buildIndicators(dashboardView: DashboardView): Indicator[] {
     return [
       {
         label: "Number of JOs",
-        value: homeView.totalGames
+        value: dashboardView.totalGames
       },
       {
         label: "Number of countries",
-        value: homeView.totalCountries
+        value: dashboardView.totalCountries
       }
     ];
   }
