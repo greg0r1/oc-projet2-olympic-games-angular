@@ -9,11 +9,11 @@ import { ChartItem } from '@models/chart-item.model';
 import { DataService } from '@services/data.service';
 
 @Component({
-  selector: 'app-home',
-  templateUrl: './home.component.html',
-  styleUrls: ['./home.component.scss'],
+  selector: 'app-dashboard-page',
+  templateUrl: './dashboard-page.component.html',
+  styleUrls: ['./dashboard-page.component.scss'],
 })
-export class HomeComponent implements OnInit {
+export class DashboardPageComponent implements OnInit {
   public error!: string;
   public titlePage: string = "Medals per Country";
   public indicators: Indicator[] = [];
