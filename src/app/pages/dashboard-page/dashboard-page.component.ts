@@ -7,14 +7,16 @@ import { CountryMedals } from '@models/country-medals.model';
 import { Indicator } from '@models/indicator.model';
 import { ChartItem } from '@models/chart-item.model';
 import { DataService } from '@services/data.service';
+import { ViewStatus } from '@models/view-status.model';
 
 @Component({
   selector: 'app-dashboard-page',
   templateUrl: './dashboard-page.component.html',
-  styleUrls: ['./dashboard-page.component.scss'],
+  styleUrl: './dashboard-page.component.scss',
 })
 export class DashboardPageComponent implements OnInit {
-  public error!: string;
+  public error: string = '';
+  public status: ViewStatus = 'loading';
   public titlePage: string = "Medals per Country";
   public indicators: Indicator[] = [];
   public chartItems: ChartItem[] = [];
@@ -38,9 +40,11 @@ export class DashboardPageComponent implements OnInit {
               };
             });
             this.medalsPerCountry = dashboardView.medalsPerCountry;
+            this.status = this.medalsPerCountry.length === 0 ? 'empty' : 'success';
           },
           error: (error: Error): void => {
             this.error = error.message;
+            this.status = 'error';
           }
         });
   }

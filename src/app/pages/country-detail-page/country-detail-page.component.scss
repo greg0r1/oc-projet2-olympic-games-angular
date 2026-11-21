@@ -5,6 +5,7 @@
   @include layout.page-grid;
 
   app-header,
+  app-status-message,
   .chart,
   .center {
     grid-column: 1 / -1; // toute la largeur, par défaut

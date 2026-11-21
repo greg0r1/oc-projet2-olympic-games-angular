@@ -1,15 +1,28 @@
 <div class="page-grid">
-  <app-header
-    [indicators]="indicators"
-    [pageTitle]="titlePage">
-  </app-header>
-  <div class="chart">
-    <app-line-chart
-      [labels]="years"
-      [values]="medals"
-    ></app-line-chart>
-    <h2>Date</h2>
-  </div>
+  @switch (status) {
+    @case ('success') {
+      <app-header
+        [indicators]="indicators"
+        [pageTitle]="titlePage">
+      </app-header>
+      <div class="chart">
+        <app-line-chart
+          [labels]="years"
+          [values]="medals"
+        ></app-line-chart>
+        <h2>Date</h2>
+      </div>
+    }
+    @case ('loading') {
+      <app-status-message status="loading"></app-status-message>
+    }
+    @case ('empty') {
+      <app-status-message status="empty"></app-status-message>
+    }
+    @case ('error') {
+      <app-status-message [message]="error" status="error"></app-status-message>
+    }
+  }
   <div class="center">
     <a routerLink="">Go back</a>
   </div>

@@ -1,13 +1,26 @@
 <h2>Olympic games app</h2>
 <hr/>
 <div class="page-grid">
-  <app-header
-    [indicators]="indicators"
-    [pageTitle]="titlePage">
-  </app-header>
-  <p class="intro">{{ introText }}</p>
-  <app-pie-chart
-    (itemSelected)="onCountrySelected($event)"
-    [items]="chartItems"
-  ></app-pie-chart>
+  @switch (status) {
+    @case ('success') {
+      <app-header
+        [indicators]="indicators"
+        [pageTitle]="titlePage">
+      </app-header>
+      <p class="intro">{{ introText }}</p>
+      <app-pie-chart
+        (itemSelected)="onCountrySelected($event)"
+        [items]="chartItems"
+      ></app-pie-chart>
+    }
+    @case ('loading') {
+      <app-status-message status="loading"></app-status-message>
+    }
+    @case ('empty') {
+      <app-status-message status="empty"></app-status-message>
+    }
+    @case ('error') {
+      <app-status-message [message]="error" status="error"></app-status-message>
+    }
+  }
 </div>

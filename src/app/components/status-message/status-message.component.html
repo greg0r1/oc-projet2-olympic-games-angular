@@ -1,0 +1,18 @@
+@switch (status) {
+  @case ('loading') {
+    <div class="state" role="status">
+      <span aria-hidden="true" class="spinner"></span>
+      <p>Loading…</p>
+    </div>
+  }
+  @case ('empty') {
+    <div class="state">
+      <p>No data available.</p>
+    </div>
+  }
+  @case ('error') {
+    <div class="state state--error" role="alert">
+      <p>{{ message }}</p>
+    </div>
+  }
+}

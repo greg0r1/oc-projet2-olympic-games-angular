@@ -10,9 +10,10 @@ import { CountryDetailPageComponent } from "@pages/country-detail-page/country-d
 import { HeaderComponent } from '@components/header/header.component';
 import { PieChartComponent } from '@components/pie-chart/pie-chart.component';
 import { LineChartComponent } from '@components/line-chart/line-chart.component';
+import { StatusMessageComponent } from '@components/status-message/status-message.component';
 
 @NgModule({
-  declarations: [AppComponent, DashboardPageComponent, NotFoundComponent, CountryDetailPageComponent, HeaderComponent, PieChartComponent, LineChartComponent],
+  declarations: [AppComponent, DashboardPageComponent, NotFoundComponent, CountryDetailPageComponent, HeaderComponent, PieChartComponent, LineChartComponent, StatusMessageComponent],
   imports: [BrowserModule, AppRoutingModule],
   providers: [provideHttpClient()],
   bootstrap: [AppComponent],
