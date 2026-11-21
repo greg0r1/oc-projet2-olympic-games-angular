@@ -6,7 +6,8 @@
 
   app-header,
   .intro,
-  app-pie-chart {
+  app-pie-chart,
+  app-status-message {
     grid-column: 1 / -1; // toute la largeur, par défaut
   }
 
