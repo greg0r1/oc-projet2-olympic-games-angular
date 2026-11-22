@@ -61,7 +61,11 @@ export class DataService {
   }
 
   private countGames(olympics: Olympic[]): number {
-    return Array.from(new Set(olympics.map((olympic: Olympic): number[] => olympic.participations.map((participation: Participation): number => participation.year)).flat())).length;
+    const years: number[] = olympics.flatMap((olympic: Olympic): number[] =>
+      olympic.participations.map((participation: Participation): number => participation.year)
+    );
+    const distinctYears: Set<number> = new Set(years);
+    return distinctYears.size;
   }
 
   private findCountry(olympics: Olympic[], id: number): Olympic | undefined {
