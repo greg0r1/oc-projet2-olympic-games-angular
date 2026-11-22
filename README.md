@@ -63,6 +63,8 @@ Le détail de l'architecture (rôle de chaque élément, flux de données, alter
 - **Une seule requête HTTP** : `shareReplay(1)` dans `DataService`.
 - **Pages nommées selon les spécifications** : `DashboardPageComponent`, `CountryDetailPageComponent` (suffixe `Component` selon le style guide Angular).
 - **Route `/country/:id`** : l'identifiant est stable et unique, contrairement au nom (espaces, accents).
+- **Titres** : le titre de la page (nom du pays, « Medals per Country ») est un `h2` dans `HeaderComponent`. Un `h1` « Olympic games app », absent de la maquette, est ajouté dans `AppComponent` pour que chaque page ait un `h1`. C'est un écart assumé avec la maquette.
+- **Libellé d'axe** : « Dates », sous la courbe, est un simple paragraphe et non un titre.
 
 ### Responsive
 
@@ -109,7 +111,16 @@ Dans le dashboard, un clic sur un secteur dont le pays est introuvable redirige 
 
 ## Accessibilité
 
-> **À compléter après l'étape accessibilité.** Ne décris ici que ce qui est réellement fait : contrastes (AA), focus visibles, `aria-label` et description textuelle des graphiques, titre `h1`. Aujourd'hui, seuls les états `loading` (`role="status"`) et `error` (`role="alert"`) sont annoncés aux lecteurs d'écran.
+Mesure Lighthouse (catégorie Accessibilité, en local, le 22/11/2026) : **100** sur le dashboard et sur la page détail.
+
+| Point              | Ce qui est en place                                                                                                                                                        |
+|--------------------|----------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
+| Contraste du texte | texte courant `#595959` sur blanc (7,00:1) ; texte secondaire `#6b6b6b` (5,33:1) ; erreur `#b3261e` (6,54:1)                                                               |
+| Titre de page      | blanc sur `#0b868f` : 4,36:1. Le titre est en « grand texte » (1.25rem, gras), donc le seuil AA est de 3:1. **Réduire sa taille ou sa graisse ferait échouer ce critère.** |
+| Graphiques         | chaque `canvas` a `role="img"` et un `aria-label` qui énumère les valeurs (« Total medals per country: … », « Medals per year: … »)                                        |
+| Structure          | `header` (repère `banner`) avec le `h1`, `main` autour du contenu, un `h2` par page                                                                                        |
+| États              | `loading` annoncé avec `role="status"`, `error` avec `role="alert"`                                                                                                        |
+| Focus              | aucun style ne supprime l'anneau de focus du navigateur ; le seul élément interactif des pages hors graphique est le lien « Go back »                                      |
 
 ## Limites connues
 
@@ -118,16 +129,7 @@ Dans le dashboard, un clic sur un secteur dont le pays est introuvable redirige 
 - **Cause d'erreur masquée** : le `catchError` du service remplace toute erreur de chargement ou de validation par un message générique ; la cause réelle n'est pas journalisée.
 - **Messages en anglais**, non internationalisés.
 - **Pas de bouton « réessayer »** sur le dashboard en cas d'erreur.
-- **Camembert non utilisable au clavier** : la sélection d'un pays se fait uniquement à la souris ou au toucher.
+- **Camembert non utilisable au clavier** : la sélection d'un pays se fait uniquement à la souris ou au toucher. Les valeurs sont lisibles par un lecteur d'écran, mais pas de navigation vers un pays.
+- **Contraste des tranches claires du camembert** : `#adc3de` (1,80:1 sur blanc), `#ffa500` (1,97:1) et `#94819d` (3,57:1) sont sous le seuil de 3:1 pour des éléments graphiques. Les valeurs restent accessibles par le libellé et l'infobulle.
 - **Gardes de type écrites à la main** : le type TypeScript et sa garde peuvent diverger si l'un est modifié sans l'autre.
 - **Tests unitaires** : voir la section Installation.
-
-## Pistes d'évolution
-
-- Source de données : passer du fichier JSON à une API ne toucherait que `DataService` et les modèles.
-- Validation : sur un projet plus grand, remplacer les gardes écrites à la main par un schéma (par exemple Zod) ou par des types générés depuis un contrat OpenAPI, pour avoir une seule source de vérité.
-- Ajouter un bouton « réessayer » et une version accessible au clavier du camembert (liste des pays).
-
-## Captures d'écran
-
-> **À compléter :** captures du dashboard et de la page détail, en desktop et en mobile, rangées dans un dossier du dépôt ou jointes au livrable, avec les liens ici.
