@@ -6,6 +6,7 @@ import { Olympic } from '@models/olympic.model';
 import { Participation } from '@models/participation.model';
 import { DashboardView } from '@models/dashboard-view.model';
 import { CountryView } from '@models/country-view.model';
+import { validateOlympics } from '@services/olympic-validator';
 
 @Injectable({
   providedIn: 'root'
@@ -17,7 +18,8 @@ export class DataService {
   private readonly OLYMPIC_URL = './assets/mock/olympic.json';
 
   constructor(private http: HttpClient) {
-    this.olympic$ = this.http.get<Olympic[]>(this.OLYMPIC_URL).pipe(
+    this.olympic$ = this.http.get<unknown>(this.OLYMPIC_URL).pipe(
+      map(validateOlympics),
       catchError(() => {
         return throwError(() => new Error(this.LOAD_ERROR_MESSAGE));
       }),
