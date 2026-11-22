@@ -12,6 +12,7 @@ import {
 
 import { ChartItem } from '@models/chart-item.model';
 import Chart from 'chart.js/auto';
+import { PIE_CHART_COLORS } from '@constants/chart-colors';
 
 @Component({
   selector: 'app-pie-chart',
@@ -47,7 +48,7 @@ export class PieChartComponent implements AfterViewInit, OnChanges, OnDestroy {
         datasets: [{
           label: 'Medals',
           data: this.getValues(this.items),
-          backgroundColor: ['#0b868f', '#adc3de', '#7a3c53', '#8f6263', 'orange', '#94819d'],
+          backgroundColor: PIE_CHART_COLORS,
           hoverOffset: 4
         }],
       },
