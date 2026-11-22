@@ -15,6 +15,9 @@
       ],
       "@pages/*": [
         "src/app/pages/*"
+      ],
+      "@constants/*": [
+        "src/app/constants/*"
       ]
     },
     "outDir": "./dist/out-tsc",

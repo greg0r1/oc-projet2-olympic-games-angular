@@ -8,6 +8,7 @@ import {
   ViewChild
 } from '@angular/core';
 import Chart from 'chart.js/auto';
+import { CHART_PRIMARY_COLOR } from '@constants/chart-colors';
 
 @Component({
   selector: 'app-line-chart',
@@ -44,7 +45,7 @@ export class LineChartComponent implements OnChanges, AfterViewInit, OnDestroy {
           {
             label: "medals",
             data: this.values,
-            backgroundColor: '#0b868f'
+            backgroundColor: CHART_PRIMARY_COLOR
           },
         ]
       },
