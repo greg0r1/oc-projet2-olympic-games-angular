@@ -20,7 +20,7 @@ export class LineChartComponent implements OnChanges, AfterViewInit, OnDestroy {
   @Input({ required: true }) values!: number[];
   @ViewChild('canvas') canvas!: ElementRef<HTMLCanvasElement>;
   private lineChart: Chart<"line", number[], number> | undefined;
-  
+
   get ariaLabel(): string {
     const details: string = this.labels
       .map((year: number, index: number): string => `${year}: ${this.values[index]}`)
@@ -43,7 +43,7 @@ export class LineChartComponent implements OnChanges, AfterViewInit, OnDestroy {
     this.lineChart?.destroy();
   }
 
-  private buildLineChart() {
+  private buildLineChart(): void {
     this.lineChart = new Chart(this.canvas.nativeElement, {
       type: 'line',
       data: {

@@ -6,6 +6,7 @@ import { Olympic } from '@models/olympic.model';
 import { Participation } from '@models/participation.model';
 import { DashboardView } from '@models/dashboard-view.model';
 import { CountryView } from '@models/country-view.model';
+import { CountryMedals } from '@models/country-medals.model';
 import { validateOlympics } from '@services/olympic-validator';
 
 @Injectable({
@@ -13,29 +14,25 @@ import { validateOlympics } from '@services/olympic-validator';
 })
 export class DataService {
 
-  private readonly LOAD_ERROR_MESSAGE = "Unable to load the data. Please try again later.";
+  private readonly LOAD_ERROR_MESSAGE: string = "Unable to load the data. Please try again later.";
   private readonly olympic$: Observable<Olympic[]>;
-  private readonly OLYMPIC_URL = './assets/mock/olympic.json';
+  private readonly OLYMPIC_URL: string = './assets/mock/olympic.json';
 
   constructor(private http: HttpClient) {
     this.olympic$ = this.http.get<unknown>(this.OLYMPIC_URL).pipe(
       map(validateOlympics),
-      catchError(() => {
-        return throwError(() => new Error(this.LOAD_ERROR_MESSAGE));
+      catchError((): Observable<never> => {
+        return throwError((): Error => new Error(this.LOAD_ERROR_MESSAGE));
       }),
       shareReplay(1));
   }
 
-  public getOlympics(): Observable<Olympic[]> {
-    return this.olympic$;
-  }
-
   public getDashboardView(): Observable<DashboardView> {
-    return this.olympic$.pipe(map((olympics: Olympic[]) => {
+    return this.olympic$.pipe(map((olympics: Olympic[]): DashboardView => {
       return {
         totalCountries: olympics.length,
         totalGames: this.countGames(olympics),
-        medalsPerCountry: olympics.map((olympic: Olympic) => {
+        medalsPerCountry: olympics.map((olympic: Olympic): CountryMedals => {
           return {
             id: olympic.id,
             country: olympic.country,
@@ -47,7 +44,7 @@ export class DataService {
   }
 
   public getCountryView(id: number): Observable<CountryView | undefined> {
-    return this.olympic$.pipe(map((olympics: Olympic[]) => {
+    return this.olympic$.pipe(map((olympics: Olympic[]): CountryView | undefined => {
       const countryOlympic: Olympic | undefined = this.findCountry(olympics, id);
       if (!countryOlympic) return undefined;
       const countryParticipations: Participation[] = countryOlympic.participations;
@@ -64,11 +61,15 @@ export class DataService {
   }
 
   private countGames(olympics: Olympic[]): number {
-    return Array.from(new Set(olympics.map((olympic: Olympic) => olympic.participations.map((participation: Participation): number => participation.year)).flat())).length;
+    const years: number[] = olympics.flatMap((olympic: Olympic): number[] =>
+      olympic.participations.map((participation: Participation): number => participation.year)
+    );
+    const distinctYears: Set<number> = new Set(years);
+    return distinctYears.size;
   }
 
   private findCountry(olympics: Olympic[], id: number): Olympic | undefined {
-    return olympics.find((olympic: Olympic) => olympic.id === id);
+    return olympics.find((olympic: Olympic): boolean => olympic.id === id);
   }
 
   private sumMedals(participations: Participation[]): number {
