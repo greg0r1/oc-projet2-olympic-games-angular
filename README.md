@@ -16,7 +16,7 @@ npm start          # serveur de développement : http://localhost:4200/
 npm run build      # build de production dans dist/
 ```
 
-> **À compléter :** l'état de `npm test` (les `*.spec.ts` du starter ne sont pas à jour). Indiquer ici ce que tu décides : corriger ou supprimer.
+Ce projet ne comporte pas de tests automatisés. Les fichiers de spec générés par Angular CLI n'étaient pas maintenus et la configuration de test héritée du starter (`src/test.ts`, `karma.conf.js`) ne s'exécute plus avec cette version d'Angular ; les specs ont été retirés. Le script `npm test` du starter n'est donc pas opérationnel.
 
 ## Routes
 
@@ -64,6 +64,8 @@ Le détail de l'architecture (rôle de chaque élément, flux de données, alter
 - **Pages nommées selon les spécifications** : `DashboardPageComponent`, `CountryDetailPageComponent` (suffixe `Component` selon le style guide Angular).
 - **Route `/country/:id`** : l'identifiant est stable et unique, contrairement au nom (espaces, accents).
 - **Titres** : le titre de la page (nom du pays, « Medals per Country ») est un `h2` dans `HeaderComponent`. Un `h1` « Olympic games app », absent de la maquette, est ajouté dans `AppComponent` pour que chaque page ait un `h1`. C'est un écart assumé avec la maquette.
+- **Contexte de l'application** : il est présenté par le `h1` « Olympic games app » et, sur le dashboard, par un court paragraphe d'introduction (ce que montre le graphique, comment ouvrir le détail d'un pays).
+- **Totaux de médailles** : le jeu de données fourni ne détaille pas or, argent et bronze. `medalsCount` est traité comme le total des médailles d'une participation, et le total d'un pays est la somme de ces valeurs. La règle « Totals = gold + silver + bronze » du cahier des charges est donc respectée au niveau du total fourni, pas recalculée.
 - **Libellé d'axe** : « Dates », sous la courbe, est un simple paragraphe et non un titre.
 
 ### Responsive
@@ -78,7 +80,7 @@ Mise en page en grille CSS, via le mixin `page-grid` (`src/styles/_layout.scss`)
 
 Sur desktop, le graphique occupe les colonnes 3 à 10.
 
-> **À compléter (avec tes mots) :** pourquoi une grille plutôt qu'une autre approche (flex, colonnes fixes…), et ce que « côte à côte » signifie dans ton choix. Tu devras pouvoir le défendre à l'oral.
+J'ai utilisé une grille CSS plutôt que flexbox ou des largeurs fixes, parce que le cahier des charges décrit la mise en page en nombre de colonnes (12, 8 ou 4 selon la largeur). La grille me permet de déclarer ces colonnes une seule fois, dans le mixin `page-grid`, et de placer chaque bloc par rapport à elles : sur desktop, le graphique occupe les colonnes 3 à 10. Avec flexbox, j'aurais dû calculer des pourcentages et gérer les retours à la ligne moi-même. Sur desktop, les indicateurs de l'en-tête sont alignés côte à côte ; sur tablette et mobile, ils s'empilent.
 
 ### États d'affichage : loading, empty, error
 
@@ -107,20 +109,22 @@ Dans le dashboard, un clic sur un secteur dont le pays est introuvable redirige 
 ### Couleurs
 
 - Styles : variables SCSS nommées par rôle (`$color-primary`, `$color-text-muted`, `$color-text-subtle`) dans `src/styles/_colors.scss`.
-- Graphiques : constantes TypeScript (`src/app/constants/chart-colors.ts`), car Chart.js a besoin de valeurs JavaScript.
+- Graphiques : constantes TypeScript (`src/app/constants/chart-colors.ts`), car Chart.js a besoin de valeurs JavaScript. La courbe utilise la couleur principale pour le trait (`borderColor`) et pour les points (`backgroundColor`) : sans `borderColor`, le trait gardait une couleur par défaut peu visible sur fond blanc.
 
 ## Accessibilité
 
 Mesure Lighthouse (catégorie Accessibilité, en local, le 22/11/2026) : **100** sur le dashboard et sur la page détail.
 
-| Point              | Ce qui est en place                                                                                                                                                        |
-|--------------------|----------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
-| Contraste du texte | texte courant `#595959` sur blanc (7,00:1) ; texte secondaire `#6b6b6b` (5,33:1) ; erreur `#b3261e` (6,54:1)                                                               |
-| Titre de page      | blanc sur `#0b868f` : 4,36:1. Le titre est en « grand texte » (1.25rem, gras), donc le seuil AA est de 3:1. **Réduire sa taille ou sa graisse ferait échouer ce critère.** |
-| Graphiques         | chaque `canvas` a `role="img"` et un `aria-label` qui énumère les valeurs (« Total medals per country: … », « Medals per year: … »)                                        |
-| Structure          | `header` (repère `banner`) avec le `h1`, `main` autour du contenu, un `h2` par page                                                                                        |
-| États              | `loading` annoncé avec `role="status"`, `error` avec `role="alert"`                                                                                                        |
-| Focus              | aucun style ne supprime l'anneau de focus du navigateur ; le seul élément interactif des pages hors graphique est le lien « Go back »                                      |
+| Point                              | Ce qui est en place                                                                                                                                                                                                                                  |
+|------------------------------------|------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
+| Contraste du texte                 | texte courant `#595959` sur blanc (7,00:1) ; texte secondaire `#6b6b6b` (5,33:1) ; erreur `#b3261e` (6,54:1)                                                                                                                                         |
+| Titre de page                      | blanc sur `#0b868f` : 4,36:1. Le titre est en « grand texte » (1.25rem, gras), donc le seuil AA est de 3:1. **Réduire sa taille ou sa graisse ferait échouer ce critère.**                                                                           |
+| Contraste de la courbe             | trait et points en `#0b868f` sur blanc : 4,36:1, au-dessus du seuil de 3:1 pour un élément graphique                                                                                                                                                 |
+| Graphiques                         | chaque `canvas` a `role="img"` et un `aria-label` qui énumère les valeurs (« Total medals per country: … », « Medals per year: … »)                                                                                                                  |
+| `aria-label` sur boutons et icônes | sans objet : l'application n'a ni bouton ni icône sans texte. Le spinner est masqué aux lecteurs d'écran (`aria-hidden`) et le lien « Go back » a un libellé visible, qu'un `aria-label` remplacerait inutilement                                    |
+| Structure                          | `header` (repère `banner`) avec le `h1`, `main` autour du contenu, un `h2` par page                                                                                                                                                                  |
+| États                              | `loading` annoncé avec `role="status"`, `error` avec `role="alert"`                                                                                                                                                                                  |
+| Focus                              | aucun style ne supprime l'anneau de focus du navigateur ; le seul élément interactif des pages hors graphique est le lien « Go back ». Test au clavier : la touche Tab arrive directement sur ce lien, sur la page détail et sur la page introuvable |
 
 ## Limites connues
 
@@ -132,4 +136,4 @@ Mesure Lighthouse (catégorie Accessibilité, en local, le 22/11/2026) : **100**
 - **Camembert non utilisable au clavier** : la sélection d'un pays se fait uniquement à la souris ou au toucher. Les valeurs sont lisibles par un lecteur d'écran, mais pas de navigation vers un pays.
 - **Contraste des tranches claires du camembert** : `#adc3de` (1,80:1 sur blanc), `#ffa500` (1,97:1) et `#94819d` (3,57:1) sont sous le seuil de 3:1 pour des éléments graphiques. Les valeurs restent accessibles par le libellé et l'infobulle.
 - **Gardes de type écrites à la main** : le type TypeScript et sa garde peuvent diverger si l'un est modifié sans l'autre.
-- **Tests unitaires** : voir la section Installation.
+- **Aucun test automatisé** : voir la section Installation. Les gardes de validation, les états des pages et les calculs du service ne sont pas couverts.
