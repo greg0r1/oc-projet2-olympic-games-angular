@@ -50,7 +50,11 @@ export class DashboardPageComponent implements OnInit {
   }
 
   public onCountrySelected(index: number): void {
-    const item: CountryMedals = this.medalsPerCountry[index];
+    const item: CountryMedals | undefined = this.medalsPerCountry[index];
+    if (!item) {
+      void this.router.navigate(['/not-found']);
+      return;
+    }
     void this.router.navigate(['/country', item.id]);
   }
 
