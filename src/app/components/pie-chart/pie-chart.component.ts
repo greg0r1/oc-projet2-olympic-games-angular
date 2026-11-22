@@ -40,6 +40,13 @@ export class PieChartComponent implements AfterViewInit, OnChanges, OnDestroy {
     this.pieChart?.destroy();
   }
 
+  get ariaLabel(): string {
+    const details: string = this.items
+      .map((item: ChartItem): string => `${item.label}: ${item.value}`)
+      .join(', ');
+    return `Total medals per country: ${details}`;
+  }
+
   private buildPieChart() {
     this.pieChart = new Chart(this.canvas.nativeElement, {
       type: 'pie',

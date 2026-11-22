@@ -6,7 +6,10 @@
   justify-content: center;
   margin: 5px;
 
-  div {
+  h2 {
+    margin: 0;
+    font-size: 1.25rem;
+    font-weight: bold;
     background: c.$color-primary;
     padding: 10px;
     border-radius: 10px;

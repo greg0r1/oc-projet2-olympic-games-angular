@@ -36,6 +36,13 @@ export class LineChartComponent implements OnChanges, AfterViewInit, OnDestroy {
     this.lineChart?.destroy();
   }
 
+  get ariaLabel(): string {
+    const details: string = this.labels
+      .map((year: number, index: number): string => `${year}: ${this.values[index]}`)
+      .join(', ');
+    return `Medals per year: ${details}`;
+  }
+
   private buildLineChart() {
     this.lineChart = new Chart(this.canvas.nativeElement, {
       type: 'line',
