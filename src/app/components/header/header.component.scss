@@ -1,4 +1,5 @@
 @use '../../../styles/breakpoints' as bp;
+@use '../../../styles/colors' as c;
 
 .title {
   display: flex;
@@ -6,7 +7,7 @@
   margin: 5px;
 
   div {
-    background: #0b868f;
+    background: c.$color-primary;
     padding: 10px;
     border-radius: 10px;
     color: white;
@@ -28,9 +29,9 @@
 
   div {
     padding: 10px;
-    border: solid #0b868f 1px;
+    border: solid c.$color-primary 1px;
     border-radius: 10px;
-    color: gray;
+    color: c.$color-text-subtle;
     margin: 0;
 
     p {

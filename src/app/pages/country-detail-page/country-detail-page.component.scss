@@ -1,5 +1,6 @@
 @use '../../../styles/breakpoints' as bp;
 @use '../../../styles/layout';
+@use '../../../styles/colors' as c;
 
 .page-grid {
   @include layout.page-grid;
@@ -20,7 +21,7 @@
 
 .chart h2 {
   text-align: center;
-  color: gray;
+  color: c.$color-text-subtle;
 }
 
 .center {
