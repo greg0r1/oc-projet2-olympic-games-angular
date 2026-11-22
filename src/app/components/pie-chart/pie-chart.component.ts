@@ -11,7 +11,7 @@ import {
 } from '@angular/core';
 
 import { ChartItem } from '@models/chart-item.model';
-import Chart from 'chart.js/auto';
+import Chart, { ChartEvent, InteractionItem } from 'chart.js/auto';
 import { PIE_CHART_COLORS } from '@constants/chart-colors';
 
 @Component({
@@ -25,21 +25,6 @@ export class PieChartComponent implements AfterViewInit, OnChanges, OnDestroy {
   @ViewChild('canvas') canvas!: ElementRef<HTMLCanvasElement>;
   private pieChart: Chart<"pie", number[], string> | undefined;
 
-  ngOnChanges() {
-    if (!this.pieChart) return;
-    this.pieChart.data.labels = this.getLabels(this.items);
-    this.pieChart.data.datasets[0].data = this.getValues(this.items);
-    this.pieChart.update();
-  }
-
-  ngAfterViewInit() {
-    this.buildPieChart();
-  }
-
-  ngOnDestroy() {
-    this.pieChart?.destroy();
-  }
-
   get ariaLabel(): string {
     const details: string = this.items
       .map((item: ChartItem): string => `${item.label}: ${item.value}`)
@@ -47,7 +32,22 @@ export class PieChartComponent implements AfterViewInit, OnChanges, OnDestroy {
     return `Total medals per country: ${details}`;
   }
 
-  private buildPieChart() {
+  ngOnChanges(): void {
+    if (!this.pieChart) return;
+    this.pieChart.data.labels = this.getLabels(this.items);
+    this.pieChart.data.datasets[0].data = this.getValues(this.items);
+    this.pieChart.update();
+  }
+
+  ngAfterViewInit(): void {
+    this.buildPieChart();
+  }
+
+  ngOnDestroy(): void {
+    this.pieChart?.destroy();
+  }
+
+  private buildPieChart(): void {
     this.pieChart = new Chart(this.canvas.nativeElement, {
       type: 'pie',
       data: {
@@ -61,11 +61,11 @@ export class PieChartComponent implements AfterViewInit, OnChanges, OnDestroy {
       },
       options: {
         maintainAspectRatio: false,
-        onClick: (e) => {
+        onClick: (e: ChartEvent): void => {
           if (e.native) {
-            const points = this.pieChart?.getElementsAtEventForMode(e.native, 'point', { intersect: true }, true);
+            const points: InteractionItem[] | undefined = this.pieChart?.getElementsAtEventForMode(e.native, 'point', { intersect: true }, true);
             if (points?.length) {
-              const firstPoint = points[0];
+              const firstPoint: InteractionItem = points[0];
               this.itemSelected.emit(firstPoint.index);
             }
           }

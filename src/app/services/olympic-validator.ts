@@ -1,7 +1,7 @@
 import { Olympic } from '@models/olympic.model';
 import { Participation } from '@models/participation.model';
 
-const INVALID_DATA_MESSAGE = 'Invalid Olympic data';
+const INVALID_DATA_MESSAGE: string = 'Invalid Olympic data';
 
 export function validateOlympics(data: unknown): Olympic[] {
   if (!isOlympicArray(data) || hasDuplicateIds(data)) {
@@ -19,7 +19,7 @@ function isNonEmptyString(value: unknown): value is string {
 }
 
 function isNonNegativeInteger(value: unknown): value is number {
-  return Number.isInteger(value) && (value as number) >= 0;
+  return typeof value === 'number' && Number.isInteger(value) && value >= 0;
 }
 
 function isParticipation(value: unknown): value is Participation {
