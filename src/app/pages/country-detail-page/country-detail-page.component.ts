@@ -10,7 +10,7 @@ import { ViewStatus } from '@models/view-status.model';
 @Component({
   selector: 'app-country-detail-page',
   templateUrl: './country-detail-page.component.html',
-  styleUrls: ['./country-detail-page.component.scss']
+  styleUrl: './country-detail-page.component.scss'
 })
 export class CountryDetailPageComponent implements OnInit {
   public titlePage: string = '';
