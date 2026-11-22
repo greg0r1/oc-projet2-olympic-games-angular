@@ -20,6 +20,13 @@ export class LineChartComponent implements OnChanges, AfterViewInit, OnDestroy {
   @Input({ required: true }) values!: number[];
   @ViewChild('canvas') canvas!: ElementRef<HTMLCanvasElement>;
   private lineChart: Chart<"line", number[], number> | undefined;
+  
+  get ariaLabel(): string {
+    const details: string = this.labels
+      .map((year: number, index: number): string => `${year}: ${this.values[index]}`)
+      .join(', ');
+    return `Medals per year: ${details}`;
+  }
 
   ngOnChanges(): void {
     if (!this.lineChart) return;
@@ -36,13 +43,6 @@ export class LineChartComponent implements OnChanges, AfterViewInit, OnDestroy {
     this.lineChart?.destroy();
   }
 
-  get ariaLabel(): string {
-    const details: string = this.labels
-      .map((year: number, index: number): string => `${year}: ${this.values[index]}`)
-      .join(', ');
-    return `Medals per year: ${details}`;
-  }
-
   private buildLineChart() {
     this.lineChart = new Chart(this.canvas.nativeElement, {
       type: 'line',
@@ -52,7 +52,8 @@ export class LineChartComponent implements OnChanges, AfterViewInit, OnDestroy {
           {
             label: "medals",
             data: this.values,
-            backgroundColor: CHART_PRIMARY_COLOR
+            backgroundColor: CHART_PRIMARY_COLOR,
+            borderColor: CHART_PRIMARY_COLOR
           },
         ]
       },
