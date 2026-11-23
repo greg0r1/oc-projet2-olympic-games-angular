@@ -6,9 +6,61 @@ Application web qui présente les médailles des Jeux olympiques par pays : un t
 - Chart.js 4 pour les graphiques, RxJS 7.8
 - Données : `src/assets/mock/olympic.json` (5 pays)
 
+## Sommaire
+
+- [Aperçu](#aperçu)
+- [Fonctionnalités](#fonctionnalités)
+- [Installation et lancement](#installation-et-lancement)
+- [Routes](#routes)
+- [Structure du projet](#structure-du-projet)
+- [Décisions de conception](#décisions-de-conception)
+- [Accessibilité](#accessibilité)
+- [Limites connues](#limites-connues)
+
+## Aperçu
+
+**Desktop (1342 px)**
+
+![Dashboard desktop : en-tête avec le nombre de JO et de pays, camembert des médailles par pays](docs/screenshots/dashboard-desktop.png)
+
+![Détail d'un pays desktop : en-tête avec trois indicateurs, courbe des médailles par édition](docs/screenshots/country-detail-desktop.png)
+
+**Mobile (375 px)**
+
+![Dashboard mobile : indicateurs empilés, camembert sur toute la largeur](docs/screenshots/dashboard-mobile.png)
+
+![Détail d'un pays mobile : indicateurs empilés, courbe des médailles par édition](docs/screenshots/country-detail-mobile.png)
+
+## Fonctionnalités
+
+**Tableau de bord (`/`)**
+
+- Texte d'introduction qui présente le contexte de l'application.
+- Deux indicateurs : nombre de JO (éditions distinctes, toutes participations confondues) et nombre de pays.
+- Graphique en camembert : nombre de médailles par pays. Un clic sur une part ouvre la page détail du pays.
+
+**Détail d'un pays (`/country/:id`)**
+
+- Trois indicateurs : nombre de participations, nombre total de médailles, nombre total d'athlètes.
+- Graphique en courbe : médailles par édition des JO.
+- Lien de retour vers le tableau de bord.
+
+**Gestion des cas particuliers**
+
+- Chargement, absence de données et erreur de récupération sont signalés par un message lisible (aucun message technique). En cas d'erreur sur le dashboard, un bouton « Try again » permet de relancer le chargement.
+- Un identifiant de pays inconnu ou invalide redirige vers la page « not found ». Une URL inexistante affiche directement cette page.
+
+**Transverse**
+
+- Mise en page responsive (mobile, tablette, desktop).
+- Accessibilité : contrastes AA, focus visibles, description textuelle de chaque graphique.
+
 ## Installation et lancement
 
-Prérequis : Node.js compatible avec Angular 18 (18.19.1 ou plus, ou 20.11.1 ou plus) et npm.
+Prérequis :
+
+- Node.js compatible avec Angular 18 (18.19.1 ou plus, ou 20.11.1 ou plus) et npm.
+- Angular CLI : pas besoin de l'installer globalement, `npm start` et `npm run build` utilisent la version du projet (18.0.6). Facultatif : `npm install -g @angular/cli@18`.
 
 ```bash
 npm install
@@ -27,6 +79,8 @@ Ce projet ne comporte pas de tests automatisés. Les fichiers de spec générés
 | `/not-found` et toute autre URL | Page « introuvable »                                |
 
 Un identifiant invalide ou inconnu redirige vers `/not-found` (avec `replaceUrl`, pour que le bouton « précédent » ne ramène pas sur l'URL invalide).
+
+Les chemins, les liens et le nom du paramètre `id` sont définis une seule fois dans `src/app/constants/app-routes.ts`.
 
 ## Structure du projet
 
@@ -49,7 +103,7 @@ src/
 │   └── constants/       constantes (routes, couleurs des graphiques)
 ├── styles/              partiels SCSS : _breakpoints, _layout, _colors
 └── assets/mock/         olympic.json
-docs/                    ARCHITECTURE.md, schéma, notes
+docs/                    ARCHITECTURE.md, schéma, notes, captures d'écran
 ```
 
 Alias de chemin : `@models`, `@services`, `@components`, `@pages`, `@constants`.
@@ -66,6 +120,7 @@ Le détail de l'architecture (rôle de chaque élément, flux de données, alter
 - **Titres** : le titre de la page (nom du pays, « Medals per Country ») est un `h2` dans `HeaderComponent`. Un `h1` « Olympic games app », absent de la maquette, est ajouté dans `AppComponent` pour que chaque page ait un `h1`. C'est un écart assumé avec la maquette.
 - **Contexte de l'application** : il est présenté par le `h1` « Olympic games app » et, sur le dashboard, par un court paragraphe d'introduction (ce que montre le graphique, comment ouvrir le détail d'un pays).
 - **Totaux de médailles** : le jeu de données fourni ne détaille pas or, argent et bronze. `medalsCount` est traité comme le total des médailles d'une participation, et le total d'un pays est la somme de ces valeurs. La règle « Totals = gold + silver + bronze » du cahier des charges est donc respectée au niveau du total fourni, pas recalculée.
+- **Ordre d'affichage** : aucun tri n'est appliqué. Les pays apparaissent dans l'ordre du fichier JSON, les éditions dans l'ordre des participations du pays (déjà chronologique dans les données fournies).
 - **Libellé d'axe** : « Dates », sous la courbe, est un simple paragraphe et non un titre.
 
 ### Responsive
@@ -86,7 +141,7 @@ J'ai utilisé une grille CSS plutôt que flexbox ou des largeurs fixes, parce qu
 
 - Chaque page possède un champ `status` de type `ViewStatus` (`'loading' | 'success' | 'empty' | 'error'`). L'état d'interface appartient à la page, le service reste sans état d'affichage.
 - Un seul composant, `StatusMessageComponent`, affiche les trois états non nominaux (`loading` : spinner, `empty` : « No data available. », `error` : message). Son entrée est typée `Exclude<ViewStatus, 'success'>` : il est impossible de lui demander d'afficher le succès.
-- Dashboard : en erreur, pas de bouton. Page détail : le lien « Go back » reste visible dans tous les états.
+- Dashboard : en erreur, le message est suivi d'un bouton « Try again » qui recharge la page. Page détail : le lien « Go back » reste visible dans tous les états.
 - Cas « vide » : une liste de pays vide (dashboard) ou un pays sans participation (détail).
 
 ### Validation des données (stricte, à la frontière)
@@ -115,23 +170,22 @@ Dans le dashboard, un clic sur un secteur dont le pays est introuvable redirige 
 
 Mesure Lighthouse (catégorie Accessibilité, en local, le 22/11/2026) : **100** sur le dashboard et sur la page détail.
 
-| Point                              | Ce qui est en place                                                                                                                                                                                                                                  |
-|------------------------------------|------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
-| Contraste du texte                 | texte courant `#595959` sur blanc (7,00:1) ; texte secondaire `#6b6b6b` (5,33:1) ; erreur `#b3261e` (6,54:1)                                                                                                                                         |
-| Titre de page                      | blanc sur `#0b868f` : 4,36:1. Le titre est en « grand texte » (1.25rem, gras), donc le seuil AA est de 3:1. **Réduire sa taille ou sa graisse ferait échouer ce critère.**                                                                           |
-| Contraste de la courbe             | trait et points en `#0b868f` sur blanc : 4,36:1, au-dessus du seuil de 3:1 pour un élément graphique                                                                                                                                                 |
-| Graphiques                         | chaque `canvas` a `role="img"` et un `aria-label` qui énumère les valeurs (« Total medals per country: … », « Medals per year: … »)                                                                                                                  |
-| `aria-label` sur boutons et icônes | sans objet : l'application n'a ni bouton ni icône sans texte. Le spinner est masqué aux lecteurs d'écran (`aria-hidden`) et le lien « Go back » a un libellé visible, qu'un `aria-label` remplacerait inutilement                                    |
-| Structure                          | `header` (repère `banner`) avec le `h1`, `main` autour du contenu, un `h2` par page                                                                                                                                                                  |
-| États                              | `loading` annoncé avec `role="status"`, `error` avec `role="alert"`                                                                                                                                                                                  |
-| Focus                              | aucun style ne supprime l'anneau de focus du navigateur ; le seul élément interactif des pages hors graphique est le lien « Go back ». Test au clavier : la touche Tab arrive directement sur ce lien, sur la page détail et sur la page introuvable |
+| Point                              | Ce qui est en place                                                                                                                                                                                                                                                                                                  |
+|------------------------------------|----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
+| Contraste du texte                 | texte courant `#595959` sur blanc (7,00:1) ; texte secondaire `#6b6b6b` (5,33:1) ; erreur `#b3261e` (6,54:1)                                                                                                                                                                                                         |
+| Titre de page                      | blanc sur `#0b868f` : 4,36:1. Le titre est en « grand texte » (1.25rem, gras), donc le seuil AA est de 3:1. **Réduire sa taille ou sa graisse ferait échouer ce critère.**                                                                                                                                           |
+| Contraste de la courbe             | trait et points en `#0b868f` sur blanc : 4,36:1, au-dessus du seuil de 3:1 pour un élément graphique                                                                                                                                                                                                                 |
+| Graphiques                         | chaque `canvas` a `role="img"` et un `aria-label` qui énumère les valeurs (« Total medals per country: … », « Medals per year: … »)                                                                                                                                                                                  |
+| `aria-label` sur boutons et icônes | sans objet : le bouton « Try again » et le lien « Go back » ont un libellé visible, qu'un `aria-label` remplacerait inutilement, et l'application n'a aucune icône sans texte. Le spinner est masqué aux lecteurs d'écran (`aria-hidden`)                                                                            |
+| Structure                          | `header` (repère `banner`) avec le `h1`, `main` autour du contenu, un `h2` par page                                                                                                                                                                                                                                  |
+| États                              | `loading` annoncé avec `role="status"`, `error` avec `role="alert"`                                                                                                                                                                                                                                                  |
+| Focus                              | aucun style ne supprime l'anneau de focus du navigateur. Éléments interactifs hors graphique : le lien « Go back » (détail, introuvable) et le bouton « Try again » (dashboard en erreur). Test au clavier : la touche Tab arrive directement sur le lien « Go back », sur la page détail et sur la page introuvable |
 
 ## Limites connues
 
 - **Couleur principale dupliquée** : `#0b868f` existe dans `_colors.scss` et dans `chart-colors.ts` (SCSS et Chart.js ne peuvent pas partager un fichier). Les deux valeurs doivent être modifiées ensemble.
 - **Cause d'erreur masquée** : le `catchError` du service remplace toute erreur de chargement ou de validation par un message générique ; la cause réelle n'est pas journalisée.
 - **Messages en anglais**, non internationalisés.
-- **Pas de bouton « réessayer »** sur le dashboard en cas d'erreur.
 - **Camembert non utilisable au clavier** : la sélection d'un pays se fait uniquement à la souris ou au toucher. Les valeurs sont lisibles par un lecteur d'écran, mais pas de navigation vers un pays.
 - **Contraste des tranches claires du camembert** : `#adc3de` (1,80:1 sur blanc), `#ffa500` (1,97:1) et `#94819d` (3,57:1) sont sous le seuil de 3:1 pour des éléments graphiques. Les valeurs restent accessibles par le libellé et l'infobulle.
 - **Gardes de type écrites à la main** : le type TypeScript et sa garde peuvent diverger si l'un est modifié sans l'autre.
