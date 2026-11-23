@@ -58,6 +58,10 @@ export class DashboardPageComponent implements OnInit {
     void this.router.navigate(['/country', item.id]);
   }
 
+  public reload(): void {
+    window.location.reload();
+  }
+
   private buildIndicators(dashboardView: DashboardView): Indicator[] {
     return [
       {
