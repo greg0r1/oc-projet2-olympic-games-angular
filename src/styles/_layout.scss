@@ -14,9 +14,9 @@
   }
 }
 
-@mixin chart-container {
+@mixin chart-container($height-mobile: 250px) {
   position: relative;
-  height: 250px; // mobile
+  height: $height-mobile; // mobile
 
   @media (min-width: bp.$breakpoint-tablet) {
     height: 350px; // tablette
