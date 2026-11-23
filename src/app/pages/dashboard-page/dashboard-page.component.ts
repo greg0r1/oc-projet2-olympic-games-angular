@@ -8,6 +8,7 @@ import { Indicator } from '@models/indicator.model';
 import { ChartItem } from '@models/chart-item.model';
 import { DataService } from '@services/data.service';
 import { ViewStatus } from '@models/view-status.model';
+import { ROUTE_LINKS } from '@constants/app-routes';
 
 @Component({
   selector: 'app-dashboard-page',
@@ -52,10 +53,10 @@ export class DashboardPageComponent implements OnInit {
   public onCountrySelected(index: number): void {
     const item: CountryMedals | undefined = this.medalsPerCountry[index];
     if (!item) {
-      void this.router.navigate(['/not-found']);
+      void this.router.navigate([ROUTE_LINKS.notFound]);
       return;
     }
-    void this.router.navigate(['/country', item.id]);
+    void this.router.navigate([ROUTE_LINKS.country, item.id]);
   }
 
   public reload(): void {

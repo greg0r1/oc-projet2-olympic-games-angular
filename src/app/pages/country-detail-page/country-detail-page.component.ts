@@ -6,6 +6,7 @@ import { CountryView } from '@models/country-view.model';
 import { Indicator } from '@models/indicator.model';
 import { DataService } from '@services/data.service';
 import { ViewStatus } from '@models/view-status.model';
+import { ROUTE_LINKS, ROUTE_PARAM_COUNTRY_ID } from '@constants/app-routes';
 
 @Component({
   selector: 'app-country-detail-page',
@@ -13,6 +14,7 @@ import { ViewStatus } from '@models/view-status.model';
   styleUrl: './country-detail-page.component.scss'
 })
 export class CountryDetailPageComponent implements OnInit {
+  public readonly homeLink: string = ROUTE_LINKS.home;
   public titlePage: string = '';
   public error: string = '';
   public status: ViewStatus = 'loading';
@@ -24,7 +26,7 @@ export class CountryDetailPageComponent implements OnInit {
   }
 
   ngOnInit(): void {
-    const countryId: number = Number(this.route.snapshot.paramMap.get('id'));
+    const countryId: number = Number(this.route.snapshot.paramMap.get(ROUTE_PARAM_COUNTRY_ID));
     if (!Number.isInteger(countryId)) {
       this.redirectToNotFound();
       return;
@@ -70,6 +72,6 @@ export class CountryDetailPageComponent implements OnInit {
   }
 
   private redirectToNotFound(): void {
-    void this.router.navigate(['/not-found'], { replaceUrl: true });
+    void this.router.navigate([ROUTE_LINKS.notFound], { replaceUrl: true });
   }
 }
