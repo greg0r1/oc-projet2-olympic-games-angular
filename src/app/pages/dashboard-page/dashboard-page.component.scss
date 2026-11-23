@@ -8,7 +8,8 @@
   app-header,
   .intro,
   app-pie-chart,
-  app-status-message {
+  app-status-message,
+  .actions {
     grid-column: 1 / -1; // toute la largeur, par défaut
   }
 
@@ -26,4 +27,19 @@
   text-align: center;
   line-height: 1.5;
   color: c.$color-text-muted;
+}
+
+.actions {
+  display: flex;
+  justify-content: center;
+}
+
+.retry {
+  padding: 8px 24px;
+  font: inherit;
+  color: c.$color-text-muted;
+  background: transparent;
+  border: 2px solid c.$color-primary;
+  border-radius: 4px;
+  cursor: pointer;
 }

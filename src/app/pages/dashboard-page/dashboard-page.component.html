@@ -19,6 +19,9 @@
     }
     @case ('error') {
       <app-status-message [message]="error" status="error"></app-status-message>
+      <div class="actions">
+        <button (click)="reload()" class="retry" type="button">Try again</button>
+      </div>
     }
   }
 </div>
