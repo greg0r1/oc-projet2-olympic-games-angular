@@ -46,7 +46,7 @@ src/
 │   │   ├── data.service.ts        chargement du JSON, calcul des vues
 │   │   └── olympic-validator.ts   validation des données reçues
 │   ├── models/          interfaces TypeScript (données et vues)
-│   └── constants/       constantes (couleurs des graphiques)
+│   └── constants/       constantes (routes, couleurs des graphiques)
 ├── styles/              partiels SCSS : _breakpoints, _layout, _colors
 └── assets/mock/         olympic.json
 docs/                    ARCHITECTURE.md, schéma, notes
@@ -129,7 +129,6 @@ Mesure Lighthouse (catégorie Accessibilité, en local, le 22/11/2026) : **100**
 ## Limites connues
 
 - **Couleur principale dupliquée** : `#0b868f` existe dans `_colors.scss` et dans `chart-colors.ts` (SCSS et Chart.js ne peuvent pas partager un fichier). Les deux valeurs doivent être modifiées ensemble.
-- **Constantes de routes non factorisées** : `'/not-found'`, `'/country'`, le paramètre `id` et les chemins du routing apparaissent en littéraux.
 - **Cause d'erreur masquée** : le `catchError` du service remplace toute erreur de chargement ou de validation par un message générique ; la cause réelle n'est pas journalisée.
 - **Messages en anglais**, non internationalisés.
 - **Pas de bouton « réessayer »** sur le dashboard en cas d'erreur.
